@@ -1,5 +1,7 @@
-package com.stock_exchange.demo.entity;
+package com.stock_exchange.demo.controller;
 
+import com.stock_exchange.demo.entity.Stock;
+import com.stock_exchange.demo.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +26,7 @@ public class StockController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addStock(@RequestBody Stock stock) {
-        stockService.addStock(stock.getCompanyName(), stock.getTotalShares());
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public Stock addStock(@RequestBody Stock stock) {
+        return stockService.addStock(stock);
     }
 }
