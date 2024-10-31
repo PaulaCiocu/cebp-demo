@@ -1,7 +1,6 @@
 package com.stock_exchange.demo.service;
 
 import com.stock_exchange.demo.entity.Stock;
-import com.stock_exchange.demo.repository.StockJdbcRepository;
 import com.stock_exchange.demo.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
