@@ -25,7 +25,7 @@ public class RequestService {
         return requestRepository.save(request);
     }
 
-    public List<Request> getRequestsByBuyer(String buyerId) {
+    public List<Request> getRequestsByBuyer(Long buyerId) {
         return requestRepository.findByBuyerId(buyerId);
     }
 }

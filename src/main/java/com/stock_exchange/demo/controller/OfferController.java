@@ -29,7 +29,7 @@ public class OfferController {
     }
 
     @GetMapping("/seller/{sellerId}")
-    public List<Offer> getOffersBySeller(@PathVariable String sellerId) {
+    public List<Offer> getOffersBySeller(@PathVariable Long sellerId) {
         return offerService.getOffersBySeller(sellerId);
     }
 }

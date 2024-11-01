@@ -29,7 +29,7 @@ public class RequestController {
     }
 
     @GetMapping("/buyer/{buyerId}")
-    public List<Request> getRequestsByBuyer(@PathVariable String buyerId) {
+    public List<Request> getRequestsByBuyer(@PathVariable Long buyerId) {
         return requestService.getRequestsByBuyer(buyerId);
     }
 }

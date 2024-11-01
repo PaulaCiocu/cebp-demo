@@ -25,7 +25,7 @@ public class OfferService {
         return offerRepository.save(offer);
     }
 
-    public List<Offer> getOffersBySeller(String sellerId) {
+    public List<Offer> getOffersBySeller(Long sellerId) {
         return offerRepository.findBySellerId(sellerId);
     }
 }
