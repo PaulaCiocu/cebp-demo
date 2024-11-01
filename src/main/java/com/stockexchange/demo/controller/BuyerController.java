@@ -1,8 +1,8 @@
-package com.stock_exchange.demo.controller;
+package com.stockexchange.demo.controller;
 
-import com.stock_exchange.demo.entity.Buyer;
+import com.stockexchange.demo.entity.Buyer;
 
-import com.stock_exchange.demo.service.BuyerService;
+import com.stockexchange.demo.service.BuyerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,19 +1,15 @@
-package com.stock_exchange.demo.service;
+package com.stockexchange.demo.service;
 
-import com.stock_exchange.demo.entity.Stock;
-import com.stock_exchange.demo.repository.StockRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.stockexchange.demo.entity.Stock;
+import com.stockexchange.demo.repository.StockRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class StockService {
-
-    //private final StockJdbcRepository stockRepository;
     private final StockRepository stockRepository;
 
-    @Autowired
     public StockService(StockRepository stockRepository) {
         this.stockRepository = stockRepository;
     }

@@ -1,18 +1,15 @@
-package com.stock_exchange.demo.service;
+package com.stockexchange.demo.service;
 
-import com.stock_exchange.demo.entity.Buyer;
-import com.stock_exchange.demo.repository.BuyerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.stockexchange.demo.entity.Buyer;
+import com.stockexchange.demo.repository.BuyerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class BuyerService {
-
     private final BuyerRepository buyerRepository;
 
-    @Autowired
     public BuyerService(BuyerRepository buyerRepository) {
         this.buyerRepository = buyerRepository;
     }

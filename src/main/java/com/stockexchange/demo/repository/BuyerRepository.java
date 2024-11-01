@@ -1,6 +1,6 @@
-package com.stock_exchange.demo.repository;
+package com.stockexchange.demo.repository;
 
-import com.stock_exchange.demo.entity.Buyer;
+import com.stockexchange.demo.entity.Buyer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

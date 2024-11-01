@@ -1,7 +1,7 @@
-package com.stock_exchange.demo.controller;
+package com.stockexchange.demo.controller;
 
-import com.stock_exchange.demo.entity.Request;
-import com.stock_exchange.demo.service.RequestService;
+import com.stockexchange.demo.entity.Request;
+import com.stockexchange.demo.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

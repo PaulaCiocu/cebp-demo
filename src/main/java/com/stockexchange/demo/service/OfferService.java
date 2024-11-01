@@ -1,18 +1,15 @@
-package com.stock_exchange.demo.service;
+package com.stockexchange.demo.service;
 
-import com.stock_exchange.demo.entity.Offer;
-import com.stock_exchange.demo.repository.OfferRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.stockexchange.demo.entity.Offer;
+import com.stockexchange.demo.repository.OfferRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class OfferService {
-
     private final OfferRepository offerRepository;
 
-    @Autowired
     public OfferService(OfferRepository offerRepository) {
         this.offerRepository = offerRepository;
     }

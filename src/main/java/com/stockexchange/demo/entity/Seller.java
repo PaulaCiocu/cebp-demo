@@ -1,4 +1,4 @@
-package com.stock_exchange.demo.entity;
+package com.stockexchange.demo.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,16 +6,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Stock {
+public class Seller {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String companyName;
-    private int totalShares;
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
+    private List<Offer> offers;
 }

@@ -1,6 +1,6 @@
-package com.stock_exchange.demo.repository;
+package com.stockexchange.demo.repository;
 
-import com.stock_exchange.demo.entity.Stock;
+import com.stockexchange.demo.entity.Stock;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StockRepository extends JpaRepository<Stock, Long> {

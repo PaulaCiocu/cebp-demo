@@ -1,6 +1,6 @@
-package com.stock_exchange.demo.repository;
+package com.stockexchange.demo.repository;
 
-import com.stock_exchange.demo.entity.Offer;
+import com.stockexchange.demo.entity.Offer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

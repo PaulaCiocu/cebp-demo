@@ -1,4 +1,4 @@
-package com.stock_exchange.demo.entity;
+package com.stockexchange.demo.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
