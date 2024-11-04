@@ -8,7 +8,7 @@ public class Stock {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String companyName;
     private int totalShares;
@@ -38,4 +38,7 @@ public class Stock {
                 ", totalShares=" + totalShares +
                 '}';
     }
+     public Long getId() {
+        return id;
+     }
 }
