@@ -1,10 +1,8 @@
 package com.stockexchange.demo.controller;
 
 import com.stockexchange.demo.entity.Seller;
-import com.stockexchange.demo.entity.Offer;
 import com.stockexchange.demo.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,38 +19,36 @@ public class SellerController {
         this.sellerService = sellerService;
     }
 
-    // Add a new seller with duplicate check
     @PostMapping
-    public ResponseEntity<?> addSeller(@RequestBody Seller seller) {
-        Seller createdSeller = sellerService.addSeller(seller);
-        return new ResponseEntity<>(createdSeller, HttpStatus.CREATED);
+    public Seller createSeller(@RequestBody Seller seller) {
+        return sellerService.createSeller(seller);
     }
 
-    // Retrieve all sellers
     @GetMapping
     public List<Seller> getAllSellers() {
         return sellerService.getAllSellers();
     }
 
-    // Retrieve a specific seller by ID
     @GetMapping("/{id}")
-    public ResponseEntity<?> getSellerById(@PathVariable Long id) {
+    public ResponseEntity<Seller> getSellerById(@PathVariable Long id) {
+        return sellerService.getSellerById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Seller> updateSeller(@PathVariable Long id, @RequestBody Seller sellerDetails) {
         try {
-            Seller seller = sellerService.getSellerById(id);
-            return new ResponseEntity<>(seller, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            Seller updatedSeller = sellerService.updateSeller(id, sellerDetails);
+            return ResponseEntity.ok(updatedSeller);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 
-    // Get all offers by a specific seller
-    @GetMapping("/{sellerId}/offers")
-    public ResponseEntity<?> getOffersBySeller(@PathVariable Long sellerId) {
-        try {
-            List<Offer> offers = sellerService.getOffersBySeller(sellerId);
-            return new ResponseEntity<>(offers, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSeller(@PathVariable Long id) {
+        sellerService.deleteSeller(id);
+        return ResponseEntity.noContent().build();
     }
 }

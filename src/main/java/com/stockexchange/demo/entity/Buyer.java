@@ -19,10 +19,4 @@ public class Buyer {
     private Long id;
 
     private String name;
-
-    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL)
-    private List<Offer> offers;
-
-    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL)
-    private List<Request> requests;
 }

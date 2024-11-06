@@ -17,6 +17,5 @@ public class Seller {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
-    private List<Offer> offers;
+    private String name;
 }
