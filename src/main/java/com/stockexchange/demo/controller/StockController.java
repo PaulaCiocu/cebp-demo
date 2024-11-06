@@ -2,10 +2,10 @@ package com.stockexchange.demo.controller;
 
 import com.stockexchange.demo.entity.Stock;
 import com.stockexchange.demo.service.StockService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/stocks")
@@ -13,18 +13,40 @@ public class StockController {
 
     private final StockService stockService;
 
-    @Autowired
     public StockController(StockService stockService) {
         this.stockService = stockService;
     }
 
-    @GetMapping()
+    @PostMapping
+    public Stock createStock(@RequestBody Stock stock) {
+        return stockService.createStock(stock);
+    }
+
+    @GetMapping
     public List<Stock> getAllStocks() {
         return stockService.getAllStocks();
     }
 
-    @PostMapping
-    public Stock addStock(@RequestBody Stock stock) {
-        return stockService.addStock(stock);
+    @GetMapping("/{id}")
+    public ResponseEntity<Stock> getStockById(@PathVariable Long id) {
+        return stockService.getStockById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Stock> updateStock(@PathVariable Long id, @RequestBody Stock stockDetails) {
+        try {
+            Stock updatedStock = stockService.updateStock(id, stockDetails);
+            return ResponseEntity.ok(updatedStock);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStock(@PathVariable Long id) {
+        stockService.deleteStock(id);
+        return ResponseEntity.noContent().build();
     }
 }

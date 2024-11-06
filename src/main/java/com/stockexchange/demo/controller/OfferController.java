@@ -6,6 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/offers")
@@ -18,18 +23,36 @@ public class OfferController {
         this.offerService = offerService;
     }
 
+    @PostMapping
+    public Offer createOffer(@RequestBody Offer offer) {
+        return offerService.createOffer(offer);
+    }
+
     @GetMapping
     public List<Offer> getAllOffers() {
         return offerService.getAllOffers();
     }
 
-    @PostMapping
-    public Offer addOffer(@RequestBody Offer offer) {
-        return offerService.addOffer(offer);
+    @GetMapping("/{id}")
+    public ResponseEntity<Offer> getOfferById(@PathVariable Long id) {
+        return offerService.getOfferById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/seller/{sellerId}")
-    public List<Offer> getOffersBySeller(@PathVariable Long sellerId) {
-        return offerService.getOffersBySeller(sellerId);
+    @PutMapping("/{id}")
+    public ResponseEntity<Offer> updateOffer(@PathVariable Long id, @RequestBody Offer offerDetails) {
+        try {
+            Offer updatedOffer = offerService.updateOffer(id, offerDetails);
+            return ResponseEntity.ok(updatedOffer);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteOffer(@PathVariable Long id) {
+        offerService.deleteOffer(id);
+        return ResponseEntity.noContent().build();
     }
 }
