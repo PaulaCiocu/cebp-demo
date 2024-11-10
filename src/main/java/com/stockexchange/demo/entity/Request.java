@@ -20,6 +20,8 @@ public class Request {
     private int quantity;
     private double maxPricePerShare;
 
+    private Boolean isFulfilled;
+
     @ManyToOne
     @JoinColumn(name = "stock_id", nullable = false)
     private Stock stock;
