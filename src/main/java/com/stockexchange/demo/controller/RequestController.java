@@ -1,5 +1,7 @@
 package com.stockexchange.demo.controller;
 
+import com.stockexchange.demo.dto.Request.RequestCreateDto;
+import com.stockexchange.demo.dto.Request.RequestUpdateDto;
 import com.stockexchange.demo.entity.Request;
 import com.stockexchange.demo.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,7 @@ public class RequestController {
     }
 
     @PostMapping
-    public Request createRequest(@RequestBody Request request) {
+    public Request createRequest(@RequestBody RequestCreateDto request) {
         return requestService.createRequest(request);
     }
 
@@ -41,7 +43,7 @@ public class RequestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Request> updateRequest(@PathVariable Long id, @RequestBody Request requestDetails) {
+    public ResponseEntity<Request> updateRequest(@PathVariable Long id, @RequestBody RequestUpdateDto requestDetails) {
         try {
             Request updatedRequest = requestService.updateRequest(id, requestDetails);
             return ResponseEntity.ok(updatedRequest);

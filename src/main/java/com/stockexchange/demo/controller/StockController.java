@@ -1,5 +1,7 @@
 package com.stockexchange.demo.controller;
 
+import com.stockexchange.demo.dto.Stock.StockCreateDto;
+import com.stockexchange.demo.dto.Stock.StockUpdateDto;
 import com.stockexchange.demo.entity.Stock;
 import com.stockexchange.demo.service.StockService;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ public class StockController {
     }
 
     @PostMapping
-    public Stock createStock(@RequestBody Stock stock) {
+    public Stock createStock(@RequestBody StockCreateDto stock) {
         return stockService.createStock(stock);
     }
 
@@ -35,7 +37,7 @@ public class StockController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Stock> updateStock(@PathVariable Long id, @RequestBody Stock stockDetails) {
+    public ResponseEntity<Stock> updateStock(@PathVariable Long id, @RequestBody StockUpdateDto stockDetails) {
         try {
             Stock updatedStock = stockService.updateStock(id, stockDetails);
             return ResponseEntity.ok(updatedStock);

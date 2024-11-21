@@ -16,8 +16,8 @@ public class Offer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int quantity;
-    private double pricePerShare;
+    private Integer quantity;
+    private Double pricePerShare;
 
     private Boolean isFulfilled;
 

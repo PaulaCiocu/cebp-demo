@@ -1,4 +1,4 @@
-package com.stockexchange.demo.dto;
+package com.stockexchange.demo.dto.Offer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OfferCreateDto {
-    private int quantity;
-    private double pricePerShare;
+    private Integer quantity;
+    private Double pricePerShare;
     private Long stockId;
     private Long sellerId;
     private Long buyerId;

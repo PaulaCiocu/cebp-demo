@@ -1,22 +1,15 @@
-package com.stockexchange.demo.entity;
+package com.stockexchange.demo.dto.Stock;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Stock {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class StockUpdateDto {
     private String companyName;
     private Integer totalShares;
-
 }

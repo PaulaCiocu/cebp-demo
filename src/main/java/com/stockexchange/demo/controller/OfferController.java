@@ -1,16 +1,15 @@
 package com.stockexchange.demo.controller;
 
+import com.stockexchange.demo.dto.Offer.OfferCreateDto;
+import com.stockexchange.demo.dto.Offer.OfferUpdateDto;
 import com.stockexchange.demo.entity.Offer;
 import com.stockexchange.demo.service.OfferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/offers")
@@ -24,7 +23,7 @@ public class OfferController {
     }
 
     @PostMapping
-    public Offer createOffer(@RequestBody Offer offer) {
+    public Offer createOffer(@RequestBody OfferCreateDto offer) {
         return offerService.createOffer(offer);
     }
 
@@ -41,7 +40,7 @@ public class OfferController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Offer> updateOffer(@PathVariable Long id, @RequestBody Offer offerDetails) {
+    public ResponseEntity<Offer> updateOffer(@PathVariable Long id, @RequestBody OfferUpdateDto offerDetails) {
         try {
             Offer updatedOffer = offerService.updateOffer(id, offerDetails);
             return ResponseEntity.ok(updatedOffer);

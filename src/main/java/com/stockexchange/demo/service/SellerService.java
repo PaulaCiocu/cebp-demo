@@ -1,20 +1,16 @@
 package com.stockexchange.demo.service;
 
-import com.stockexchange.demo.entity.Seller;
-import com.stockexchange.demo.entity.Offer;
-import com.stockexchange.demo.repository.OfferRepository;
-import com.stockexchange.demo.repository.SellerRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
+import com.stockexchange.demo.dto.Seller.SellerCreateDto;
+import com.stockexchange.demo.dto.Seller.SellerUpdateDto;
+import com.stockexchange.demo.entity.Buyer;
 import com.stockexchange.demo.entity.Seller;
 import com.stockexchange.demo.repository.SellerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
 public class SellerService {
@@ -26,8 +22,13 @@ public class SellerService {
         this.sellerRepository = sellerRepository;
     }
 
-    public Seller createSeller(Seller seller) {
-        return sellerRepository.save(seller);
+    public Seller createSeller(SellerCreateDto seller) {
+
+        Seller newSeller = new Seller();
+
+        newSeller.setName(seller.getName());
+
+        return sellerRepository.save(newSeller);
     }
 
     public List<Seller> getAllSellers() {
@@ -38,13 +39,15 @@ public class SellerService {
         return sellerRepository.findById(id);
     }
 
-    public Seller updateSeller(Long id, Seller sellerDetails) {
-        return sellerRepository.findById(id)
-                .map(seller -> {
-                    seller.setName(sellerDetails.getName());
-                    return sellerRepository.save(seller);
-                })
-                .orElseThrow(() -> new RuntimeException("Seller not found with id " + id));
+    public Seller updateSeller(Long id, SellerUpdateDto sellerDetails) {
+        Seller existingSeller = sellerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Offer not found with ID: " + id));
+
+        if (sellerDetails.getName() != null) {
+            existingSeller.setName(sellerDetails.getName());
+        }
+
+        return sellerRepository.save(existingSeller);
     }
 
     public void deleteSeller(Long id) {

@@ -17,8 +17,8 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int quantity;
-    private double maxPricePerShare;
+    private Integer quantity;
+    private Double maxPricePerShare;
 
     private Boolean isFulfilled;
 

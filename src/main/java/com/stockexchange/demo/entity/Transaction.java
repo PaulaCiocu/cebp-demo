@@ -27,6 +27,6 @@ public class Transaction {
     @JoinColumn(name = "request_id", nullable = false)
     private Request request;
 
-    private int quantity;
-    private double pricePerShare;
+    private Integer quantity;
+    private Double pricePerShare;
 }

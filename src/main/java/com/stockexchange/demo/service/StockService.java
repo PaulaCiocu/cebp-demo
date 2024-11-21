@@ -1,5 +1,8 @@
 package com.stockexchange.demo.service;
 
+import com.stockexchange.demo.dto.Stock.StockCreateDto;
+import com.stockexchange.demo.dto.Stock.StockUpdateDto;
+import com.stockexchange.demo.entity.Seller;
 import com.stockexchange.demo.entity.Stock;
 import com.stockexchange.demo.repository.StockRepository;
 import org.springframework.stereotype.Service;
@@ -17,8 +20,14 @@ public class StockService {
         this.stockRepository = stockRepository;
     }
 
-    public Stock createStock(Stock stock) {
-        return stockRepository.save(stock);
+    public Stock createStock(StockCreateDto stock) {
+
+        Stock newStock = new Stock();
+
+        newStock.setCompanyName(stock.getCompanyName());
+        newStock.setTotalShares(stock.getTotalShares());
+
+        return stockRepository.save(newStock);
     }
 
     public List<Stock> getAllStocks() {
@@ -29,14 +38,19 @@ public class StockService {
         return stockRepository.findById(id);
     }
 
-    public Stock updateStock(Long id, Stock stockDetails) {
-        return stockRepository.findById(id)
-                .map(stock -> {
-                    stock.setCompanyName(stockDetails.getCompanyName());
-                    stock.setTotalShares(stockDetails.getTotalShares());
-                    return stockRepository.save(stock);
-                })
-                .orElseThrow(() -> new RuntimeException("Stock not found with id " + id));
+    public Stock updateStock(Long id, StockUpdateDto stockDetails) {
+        Stock existingStock = stockRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Offer not found with ID: " + id));
+
+        if (stockDetails.getCompanyName() != null) {
+            existingStock.setCompanyName(stockDetails.getCompanyName());
+        }
+
+        if (stockDetails.getTotalShares() != null) {
+            existingStock.setTotalShares(stockDetails.getTotalShares());
+        }
+
+        return stockRepository.save(existingStock);
     }
 
     public void deleteStock(Long id) {

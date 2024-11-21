@@ -1,13 +1,16 @@
 package com.stockexchange.demo.service;
 
+import com.stockexchange.demo.dto.Buyer.BuyerCreateDto;
+import com.stockexchange.demo.dto.Buyer.BuyerUpdateDto;
 import com.stockexchange.demo.entity.Buyer;
+import com.stockexchange.demo.entity.Offer;
 import com.stockexchange.demo.repository.BuyerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.Optional;
 
 @Service
 public class BuyerService {
@@ -19,8 +22,10 @@ public class BuyerService {
         this.buyerRepository = buyerRepository;
     }
 
-    public Buyer createBuyer(Buyer buyer) {
-        return buyerRepository.save(buyer);
+    public Buyer createBuyer(BuyerCreateDto buyer) {
+        Buyer newBuyer = new Buyer();
+        newBuyer.setName(buyer.getName());
+        return buyerRepository.save(newBuyer);
     }
 
     public List<Buyer> getAllBuyers() {
@@ -31,13 +36,16 @@ public class BuyerService {
         return buyerRepository.findById(id);
     }
 
-    public Buyer updateBuyer(Long id, Buyer buyerDetails) {
-        return buyerRepository.findById(id)
-                .map(buyer -> {
-                    buyer.setName(buyerDetails.getName());
-                    return buyerRepository.save(buyer);
-                })
-                .orElseThrow(() -> new RuntimeException("Buyer not found with id " + id));
+    public Buyer updateBuyer(Long id, BuyerUpdateDto buyerDetails) {
+
+        Buyer existingBuyer = buyerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Offer not found with ID: " + id));
+
+        if (buyerDetails.getName() != null) {
+            existingBuyer.setName(buyerDetails.getName());
+        }
+
+        return buyerRepository.save(existingBuyer);
     }
 
     public void deleteBuyer(Long id) {

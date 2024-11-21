@@ -1,5 +1,7 @@
 package com.stockexchange.demo.controller;
 
+import com.stockexchange.demo.dto.Buyer.BuyerCreateDto;
+import com.stockexchange.demo.dto.Buyer.BuyerUpdateDto;
 import com.stockexchange.demo.entity.Buyer;
 import com.stockexchange.demo.service.BuyerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,8 @@ public class BuyerController {
     }
 
     @PostMapping
-    public Buyer createBuyer(@RequestBody Buyer buyer) {
+    public Buyer createBuyer(@RequestBody BuyerCreateDto buyer) {
+
         return buyerService.createBuyer(buyer);
     }
 
@@ -37,7 +40,7 @@ public class BuyerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Buyer> updateBuyer(@PathVariable Long id, @RequestBody Buyer buyerDetails) {
+    public ResponseEntity<Buyer> updateBuyer(@PathVariable Long id, @RequestBody BuyerUpdateDto buyerDetails) {
         try {
             Buyer updatedBuyer = buyerService.updateBuyer(id, buyerDetails);
             return ResponseEntity.ok(updatedBuyer);

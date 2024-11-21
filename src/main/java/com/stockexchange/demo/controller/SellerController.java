@@ -1,5 +1,7 @@
 package com.stockexchange.demo.controller;
 
+import com.stockexchange.demo.dto.Seller.SellerCreateDto;
+import com.stockexchange.demo.dto.Seller.SellerUpdateDto;
 import com.stockexchange.demo.entity.Seller;
 import com.stockexchange.demo.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ public class SellerController {
     }
 
     @PostMapping
-    public Seller createSeller(@RequestBody Seller seller) {
+    public Seller createSeller(@RequestBody SellerCreateDto seller) {
         return sellerService.createSeller(seller);
     }
 
@@ -37,7 +39,7 @@ public class SellerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Seller> updateSeller(@PathVariable Long id, @RequestBody Seller sellerDetails) {
+    public ResponseEntity<Seller> updateSeller(@PathVariable Long id, @RequestBody SellerUpdateDto sellerDetails) {
         try {
             Seller updatedSeller = sellerService.updateSeller(id, sellerDetails);
             return ResponseEntity.ok(updatedSeller);
