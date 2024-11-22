@@ -37,11 +37,16 @@ public class TransactionService {
                 .pricePerShare(pricePerShare)
                 .build();
 
-        // Update offer and request quantities
         offer.setQuantity(offer.getQuantity() - quantity);
         request.setQuantity(request.getQuantity() - quantity);
 
-        // Fetch and update the stock related to the offer
+        if (offer.getQuantity() == 0) {
+            offer.setIsFulfilled(true);
+        }
+        if (request.getQuantity() == 0) {
+            request.setIsFulfilled(true);
+        }
+
         Stock stock = stockRepository.findOneById(offer.getStock().getId());
         stock.setRemainingShares(stock.getRemainingShares() - quantity);
         stockRepository.save(stock);

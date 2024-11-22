@@ -19,8 +19,6 @@ public class Offer {
     private Integer quantity;
     private Double pricePerShare;
 
-    private Boolean isFulfilled;
-
     @ManyToOne
     @JoinColumn(name = "stock_id", nullable = false)
     private Stock stock;
@@ -28,5 +26,8 @@ public class Offer {
     @ManyToOne
     @JoinColumn(name = "seller_id")
     private Seller seller;
+
+    @Column(nullable = false)
+    private Boolean isFulfilled = false;
 
 }

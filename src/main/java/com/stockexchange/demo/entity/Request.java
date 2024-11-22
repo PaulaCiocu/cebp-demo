@@ -20,8 +20,6 @@ public class Request {
     private Integer quantity;
     private Double maxPricePerShare;
 
-    private Boolean isFulfilled;
-
     @ManyToOne
     @JoinColumn(name = "stock_id", nullable = false)
     private Stock stock;
@@ -30,5 +28,6 @@ public class Request {
     @JoinColumn(name = "buyer_id")
     private Buyer buyer;
 
-
+    @Column(nullable = false)
+    private Boolean isFulfilled = false;
 }
