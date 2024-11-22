@@ -20,6 +20,7 @@ public class StockExchangeService {
     private final RequestRepository requestRepository;
     private final TransactionService transactionService;
 
+    /*
     @Transactional
     public void matchOffersAndRequests(String stockName) {
         List<Offer> availableOffers = offerRepository.findByStockCompanyName(stockName);
@@ -44,6 +45,7 @@ public class StockExchangeService {
             }
         }
     }
+     */
 
     public List<Offer> getAllOffers() {
         return offerRepository.findAll();

@@ -32,9 +32,12 @@ public class StockExchangeController {
         return stockExchangeService.getAllRequests();
     }
 
+    /*
     @PostMapping("/match/{stockName}")
     public ResponseEntity<String> matchOffersAndRequests(@PathVariable String stockName) {
         stockExchangeService.matchOffersAndRequests(stockName);
         return ResponseEntity.ok("Matching process completed for stock: " + stockName);
     }
+
+     */
 }
