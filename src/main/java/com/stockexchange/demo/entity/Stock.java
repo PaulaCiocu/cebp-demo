@@ -18,5 +18,12 @@ public class Stock {
 
     private String companyName;
     private Integer totalShares;
+    private Integer remainingShares;
 
+    @PrePersist
+    public void initializeRemainingShares() {
+        if (this.remainingShares == null) {
+            this.remainingShares = this.totalShares;
+        }
+    }
 }

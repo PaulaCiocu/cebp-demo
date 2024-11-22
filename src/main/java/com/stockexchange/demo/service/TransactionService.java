@@ -2,7 +2,9 @@ package com.stockexchange.demo.service;
 
 import com.stockexchange.demo.entity.Offer;
 import com.stockexchange.demo.entity.Request;
+import com.stockexchange.demo.entity.Stock;
 import com.stockexchange.demo.entity.Transaction;
+import com.stockexchange.demo.repository.StockRepository;
 import com.stockexchange.demo.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,9 @@ import java.util.Optional;
 @Service
 public class TransactionService {
 
+    @Autowired
+    private StockRepository stockRepository;
+
     private final TransactionRepository transactionRepository;
 
     @Autowired
@@ -22,7 +27,6 @@ public class TransactionService {
     }
 
     public Transaction createTransaction(Offer offer, Request request) {
-
         int quantity = Math.min(offer.getQuantity(), request.getQuantity());
         double pricePerShare = offer.getPricePerShare();
 
@@ -33,8 +37,14 @@ public class TransactionService {
                 .pricePerShare(pricePerShare)
                 .build();
 
+        // Update offer and request quantities
         offer.setQuantity(offer.getQuantity() - quantity);
         request.setQuantity(request.getQuantity() - quantity);
+
+        // Fetch and update the stock related to the offer
+        Stock stock = stockRepository.findOneById(offer.getStock().getId());
+        stock.setRemainingShares(stock.getRemainingShares() - quantity);
+        stockRepository.save(stock);
 
         transactionRepository.save(transaction);
 
