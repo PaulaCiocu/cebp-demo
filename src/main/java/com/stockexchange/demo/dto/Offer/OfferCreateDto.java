@@ -13,5 +13,4 @@ public class OfferCreateDto {
     private Double pricePerShare;
     private Long stockId;
     private Long sellerId;
-    private Long buyerId;
 }

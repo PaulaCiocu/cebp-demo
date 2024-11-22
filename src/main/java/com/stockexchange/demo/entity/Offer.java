@@ -29,7 +29,4 @@ public class Offer {
     @JoinColumn(name = "seller_id")
     private Seller seller;
 
-    @ManyToOne
-    @JoinColumn(name = "buyer_id")
-    private Buyer buyer;
 }

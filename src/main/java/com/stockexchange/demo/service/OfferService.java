@@ -22,14 +22,12 @@ import java.util.Optional;
 public class OfferService {
 
     private final OfferRepository offerRepository;
-    private final BuyerRepository buyerRepository;
     private final SellerRepository sellerRepository;
     private final StockRepository stockRepository;
 
     @Autowired
-    public OfferService(OfferRepository offerRepository, BuyerRepository buyerRepository, SellerRepository sellerRepository, StockRepository stockRepository) {
+    public OfferService(OfferRepository offerRepository, SellerRepository sellerRepository, StockRepository stockRepository) {
         this.offerRepository = offerRepository;
-        this.buyerRepository = buyerRepository;
         this.sellerRepository = sellerRepository;
         this.stockRepository = stockRepository;
 
@@ -39,15 +37,11 @@ public class OfferService {
 
         Offer newOffer = new Offer();
 
-        Buyer buyer = buyerRepository.findOneById(offer.getBuyerId());
-
         Seller seller = sellerRepository.findOneById(offer.getSellerId());
-
         Stock stock = stockRepository.findOneById(offer.getStockId());
 
         newOffer.setQuantity(offer.getQuantity());
         newOffer.setPricePerShare(offer.getPricePerShare());
-        newOffer.setBuyer(buyer);
         newOffer.setSeller(seller);
         newOffer.setStock(stock);
         return offerRepository.save(newOffer);
@@ -73,11 +67,6 @@ public class OfferService {
 
         if (offerDetails.getQuantity() != null) {
             existingOffer.setPricePerShare(offerDetails.getPricePerShare());
-        }
-
-        if (offerDetails.getBuyerId() != null) {
-            Buyer newBuyer = buyerRepository.findOneById(offerDetails.getBuyerId());
-            existingOffer.setBuyer(newBuyer);
         }
 
         if (offerDetails.getSellerId() != null) {

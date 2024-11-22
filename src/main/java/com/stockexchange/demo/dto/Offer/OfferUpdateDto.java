@@ -16,5 +16,5 @@ public class OfferUpdateDto {
     private Boolean isFulfilled;
     private Long stockId;
     private Long sellerId;
-    private Long buyerId;
+
 }
