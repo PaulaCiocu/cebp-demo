@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestCreateDto {
+public class RequestDto {
         private Integer quantity;
         private Double maxPricePerShare;
         private Long stockId;

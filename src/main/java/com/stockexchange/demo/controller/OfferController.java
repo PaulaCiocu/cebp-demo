@@ -1,7 +1,6 @@
 package com.stockexchange.demo.controller;
 
-import com.stockexchange.demo.dto.Offer.OfferCreateDto;
-import com.stockexchange.demo.dto.Offer.OfferUpdateDto;
+import com.stockexchange.demo.dto.Offer.OfferDto;
 import com.stockexchange.demo.entity.Offer;
 import com.stockexchange.demo.service.OfferService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ public class OfferController {
     }
 
     @PostMapping
-    public Offer createOffer(@RequestBody OfferCreateDto offer) {
+    public Offer createOffer(@RequestBody OfferDto offer) {
         return offerService.createOffer(offer);
     }
 
@@ -39,8 +38,8 @@ public class OfferController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Offer> updateOffer(@PathVariable Long id, @RequestBody OfferUpdateDto offerDetails) {
+    @PatchMapping("/{id}")
+    public ResponseEntity<Offer> updateOffer(@PathVariable Long id, @RequestBody OfferDto offerDetails) {
         try {
             Offer updatedOffer = offerService.updateOffer(id, offerDetails);
             return ResponseEntity.ok(updatedOffer);

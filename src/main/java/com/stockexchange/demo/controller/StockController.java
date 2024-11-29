@@ -1,7 +1,6 @@
 package com.stockexchange.demo.controller;
 
-import com.stockexchange.demo.dto.Stock.StockCreateDto;
-import com.stockexchange.demo.dto.Stock.StockUpdateDto;
+import com.stockexchange.demo.dto.Stock.StockDto;
 import com.stockexchange.demo.entity.Stock;
 import com.stockexchange.demo.service.StockService;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,7 @@ public class StockController {
     }
 
     @PostMapping
-    public Stock createStock(@RequestBody StockCreateDto stock) {
+    public Stock createStock(@RequestBody StockDto stock) {
         return stockService.createStock(stock);
     }
 
@@ -36,8 +35,8 @@ public class StockController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Stock> updateStock(@PathVariable Long id, @RequestBody StockUpdateDto stockDetails) {
+    @PatchMapping("/{id}")
+    public ResponseEntity<Stock> updateStock(@PathVariable Long id, @RequestBody StockDto stockDetails) {
         try {
             Stock updatedStock = stockService.updateStock(id, stockDetails);
             return ResponseEntity.ok(updatedStock);

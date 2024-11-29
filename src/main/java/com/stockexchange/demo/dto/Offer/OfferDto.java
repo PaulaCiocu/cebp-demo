@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OfferCreateDto {
+public class OfferDto {
     private Integer quantity;
     private Double pricePerShare;
     private Long stockId;

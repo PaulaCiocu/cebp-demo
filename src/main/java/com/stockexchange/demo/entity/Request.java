@@ -26,7 +26,7 @@ public class Request {
 
     @ManyToOne
     @JoinColumn(name = "buyer_id")
-    private Buyer buyer;
+    private User user;
 
     @Column(nullable = false)
     private Boolean isFulfilled = false;

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StockUpdateDto {
+public class StockDto {
     private String companyName;
     private Integer totalShares;
 }

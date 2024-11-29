@@ -1,15 +1,12 @@
 package com.stockexchange.demo.service;
 
-import com.stockexchange.demo.dto.Offer.OfferCreateDto;
-import com.stockexchange.demo.dto.Offer.OfferUpdateDto;
-import com.stockexchange.demo.entity.Buyer;
+import com.stockexchange.demo.dto.Offer.OfferDto;
 import com.stockexchange.demo.entity.Offer;
-import com.stockexchange.demo.entity.Seller;
 import com.stockexchange.demo.entity.Stock;
-import com.stockexchange.demo.repository.BuyerRepository;
+import com.stockexchange.demo.entity.User;
 import com.stockexchange.demo.repository.OfferRepository;
-import com.stockexchange.demo.repository.SellerRepository;
 import com.stockexchange.demo.repository.StockRepository;
+import com.stockexchange.demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,27 +19,27 @@ import java.util.Optional;
 public class OfferService {
 
     private final OfferRepository offerRepository;
-    private final SellerRepository sellerRepository;
+    private final UserRepository userRepository;
     private final StockRepository stockRepository;
 
     @Autowired
-    public OfferService(OfferRepository offerRepository, SellerRepository sellerRepository, StockRepository stockRepository) {
+    public OfferService(OfferRepository offerRepository, UserRepository userRepository, StockRepository stockRepository) {
         this.offerRepository = offerRepository;
-        this.sellerRepository = sellerRepository;
+        this.userRepository = userRepository;
         this.stockRepository = stockRepository;
 
     }
 
-    public Offer createOffer(OfferCreateDto offer) {
+    public Offer createOffer(OfferDto offer) {
 
         Offer newOffer = new Offer();
 
-        Seller seller = sellerRepository.findOneById(offer.getSellerId());
+        User seller = userRepository.findOneById(offer.getSellerId());
         Stock stock = stockRepository.findOneById(offer.getStockId());
 
         newOffer.setQuantity(offer.getQuantity());
         newOffer.setPricePerShare(offer.getPricePerShare());
-        newOffer.setSeller(seller);
+        newOffer.setUser(seller);
         newOffer.setStock(stock);
         return offerRepository.save(newOffer);
     }
@@ -55,7 +52,7 @@ public class OfferService {
         return offerRepository.findById(id);
     }
 
-    public Offer updateOffer(Long id, OfferUpdateDto offerDetails) {
+    public Offer updateOffer(Long id, OfferDto offerDetails) {
         Offer existingOffer = offerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Offer not found with ID: " + id));
 
@@ -70,8 +67,8 @@ public class OfferService {
         }
 
         if (offerDetails.getSellerId() != null) {
-            Seller newSeller = sellerRepository.findOneById(offerDetails.getSellerId());
-            existingOffer.setSeller(newSeller);
+            User newSeller = userRepository.findOneById(offerDetails.getSellerId());
+            existingOffer.setUser(newSeller);
         }
 
         if (offerDetails.getStockId() != null) {

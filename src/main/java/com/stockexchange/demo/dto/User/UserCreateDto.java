@@ -1,4 +1,5 @@
-package com.stockexchange.demo.dto.Seller;
+package com.stockexchange.demo.dto.User;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SellerUpdateDto {
+public class UserCreateDto {
     private String name;
+
+    private String email;
+
+    private String password;
 }

@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BuyerCreateDto {
+public class BuyerDto {
     private String name;
 }

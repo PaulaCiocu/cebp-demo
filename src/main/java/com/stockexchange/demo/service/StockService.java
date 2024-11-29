@@ -1,8 +1,6 @@
 package com.stockexchange.demo.service;
 
-import com.stockexchange.demo.dto.Stock.StockCreateDto;
-import com.stockexchange.demo.dto.Stock.StockUpdateDto;
-import com.stockexchange.demo.entity.Seller;
+import com.stockexchange.demo.dto.Stock.StockDto;
 import com.stockexchange.demo.entity.Stock;
 import com.stockexchange.demo.repository.StockRepository;
 import org.springframework.stereotype.Service;
@@ -20,7 +18,7 @@ public class StockService {
         this.stockRepository = stockRepository;
     }
 
-    public Stock createStock(StockCreateDto stock) {
+    public Stock createStock(StockDto stock) {
 
         Stock newStock = new Stock();
 
@@ -38,7 +36,7 @@ public class StockService {
         return stockRepository.findById(id);
     }
 
-    public Stock updateStock(Long id, StockUpdateDto stockDetails) {
+    public Stock updateStock(Long id, StockDto stockDetails) {
         Stock existingStock = stockRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Offer not found with ID: " + id));
 

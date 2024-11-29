@@ -25,7 +25,7 @@ public class Offer {
 
     @ManyToOne
     @JoinColumn(name = "seller_id")
-    private Seller seller;
+    private User user;
 
     @Column(nullable = false)
     private Boolean isFulfilled = false;
