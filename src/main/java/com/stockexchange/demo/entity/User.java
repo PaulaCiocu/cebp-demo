@@ -25,5 +25,9 @@ public class User {
 
     private String password;
 
+    //oferte
+    //request
+    //transactions
+
 
 }

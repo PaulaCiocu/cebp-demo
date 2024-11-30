@@ -20,4 +20,5 @@ public class Portfolio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // user portofolio of stocks
 }
