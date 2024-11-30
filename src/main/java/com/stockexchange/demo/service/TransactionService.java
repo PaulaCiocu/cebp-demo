@@ -4,9 +4,11 @@ import com.stockexchange.demo.entity.Offer;
 import com.stockexchange.demo.entity.Request;
 import com.stockexchange.demo.entity.Stock;
 import com.stockexchange.demo.entity.Transaction;
+import com.stockexchange.demo.repository.OfferRepository;
 import com.stockexchange.demo.repository.StockRepository;
 import com.stockexchange.demo.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -18,15 +20,24 @@ public class TransactionService {
 
     @Autowired
     private StockRepository stockRepository;
-
+    private OfferService offerService;
+    private RequestService requestService;
     private final TransactionRepository transactionRepository;
 
     @Autowired
-    public TransactionService(TransactionRepository transactionRepository) {
+    public TransactionService(TransactionRepository transactionRepository, OfferService offerService, RequestService requestService) {
         this.transactionRepository = transactionRepository;
+        this.offerService = offerService;
+        this.requestService = requestService;
     }
 
-    public Transaction createTransaction(Offer offer, Request request) {
+    public ResponseEntity<Transaction> createTransaction(Long offerId, Long requestId) {
+
+        Offer offer = offerService.getOfferById(offerId)
+                .orElseThrow(() -> new IllegalArgumentException("Offer not found with ID: " + offerId));
+        Request request = requestService.getRequestById(requestId)
+               .orElseThrow(() -> new IllegalArgumentException("Request not found with ID: " + requestId));
+
         int quantity = Math.min(offer.getQuantity(), request.getQuantity());
         double pricePerShare = offer.getPricePerShare();
 
@@ -52,8 +63,7 @@ public class TransactionService {
         stockRepository.save(stock);
 
         transactionRepository.save(transaction);
-
-        return transaction;
+        return ResponseEntity.ok(transaction);
     }
 
     public List<Transaction> getAllTransactions() {

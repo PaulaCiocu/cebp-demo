@@ -1,6 +1,5 @@
 package com.stockexchange.demo.controller;
 
-import com.stockexchange.demo.dto.Buyer.BuyerDto;
 import com.stockexchange.demo.dto.User.UserCreateDto;
 import com.stockexchange.demo.entity.User;
 import com.stockexchange.demo.service.UserService;

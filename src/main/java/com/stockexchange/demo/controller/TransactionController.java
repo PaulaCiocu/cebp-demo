@@ -30,16 +30,7 @@ public class    TransactionController {
     @PostMapping
     public ResponseEntity<Transaction> createTransaction(@RequestParam Long offerId,
                                                          @RequestParam Long requestId) {
-        Offer offer = offerService.getOfferById(offerId)
-                .orElseThrow(() -> new IllegalArgumentException("Offer not found with ID: " + offerId));
-        Request request = requestService.getRequestById(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("Request not found with ID: " + requestId));
-
-        // Create Transaction
-        Transaction savedTransaction = transactionService.createTransaction(offer, request);
-
-        return ResponseEntity.ok(savedTransaction);
-
+        return transactionService.createTransaction(offerId, requestId);
     }
 
     @GetMapping
