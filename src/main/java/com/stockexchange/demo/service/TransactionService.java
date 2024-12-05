@@ -12,8 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class TransactionService {
@@ -77,4 +76,72 @@ public class TransactionService {
     public void deleteTransaction(Long id) {
         transactionRepository.deleteById(id);
     }
+
+    public List<Transaction> getTransactionsByOfferId(Long offerId) {
+        Optional<Offer> offerOptional = offerService.getOfferById(offerId);
+
+        if (offerOptional.isEmpty()) {
+            throw new IllegalArgumentException("Offer not found for ID: " + offerId);
+        }
+
+        Offer offer = offerOptional.get();
+        List<Transaction> transaction = transactionRepository.findByOffer(offer);
+
+        if (transaction == null) {
+            throw new IllegalArgumentException("Transaction not found for Offer ID: " + offerId);
+        }
+
+        return transaction;
+    }
+
+    public List<Transaction> getTransactionsByRequestId(Long requestId) {
+        Optional<Request> requestOptional = requestService.getRequestById(requestId);
+
+        if (requestOptional.isEmpty()) {
+            throw new IllegalArgumentException("Offer not found for ID: " + requestId);
+        }
+
+        Request request = requestOptional.get();
+        List<Transaction> transaction = transactionRepository.findByRequest(request);
+
+        if (transaction == null) {
+            throw new IllegalArgumentException("Transaction not found for Offer ID: " + requestId);
+        }
+
+        return transaction;
+    }
+
+
+    public Set<Transaction> getTransactionByUserId(Long userId) {
+        // Retrieve offers and requests
+        Optional<List<Offer>> offerList = offerService.getOfferByUserId(userId);
+        Optional<List<Request>> requestList = requestService.getRequestByUserId(userId);
+
+        Set<Transaction> transactionList = new HashSet<>();
+
+        // Process offers
+        if (offerList.isPresent()) {
+            for (Offer offer : offerList.get()) {
+                System.out.println("Processing offer: " + offer);
+                List<Transaction> transactions = getTransactionsByOfferId(offer.getId());
+                transactionList.addAll(transactions);
+            }
+        } else {
+            System.out.println("No offers found for userId: " + userId);
+        }
+
+        // Process requests
+        if (requestList.isPresent()) {
+            for (Request request : requestList.get()) {
+                System.out.println("Processing request: " + request);
+                List<Transaction> transactions = getTransactionsByRequestId(request.getId());
+                transactionList.addAll(transactions);
+            }
+        } else {
+            System.out.println("No requests found for userId: " + userId);
+        }
+
+        return transactionList;
+    }
+
 }

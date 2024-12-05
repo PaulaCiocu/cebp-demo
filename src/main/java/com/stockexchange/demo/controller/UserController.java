@@ -3,13 +3,16 @@ package com.stockexchange.demo.controller;
 import com.stockexchange.demo.dto.User.UserCreateDto;
 import com.stockexchange.demo.entity.Offer;
 import com.stockexchange.demo.entity.Request;
+import com.stockexchange.demo.entity.Transaction;
 import com.stockexchange.demo.entity.User;
+import com.stockexchange.demo.service.TransactionService;
 import com.stockexchange.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -64,9 +67,15 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/requests")
-    public ResponseEntity<List<Request>> getRequestsOffers(@PathVariable Long userId) {
+    public ResponseEntity<List<Request>> getUserRequests(@PathVariable Long userId) {
         return userService.getRequestsByUserId(userId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{userId}/transactions")
+    public Set<Transaction> getUserTransactions(@PathVariable Long userId) {
+        return  userService.getTransactionsByUserId(userId);
+
     }
 }

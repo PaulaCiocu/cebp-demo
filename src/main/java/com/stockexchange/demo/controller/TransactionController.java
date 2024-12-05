@@ -1,7 +1,5 @@
 package com.stockexchange.demo.controller;
 
-import com.stockexchange.demo.entity.Offer;
-import com.stockexchange.demo.entity.Request;
 import com.stockexchange.demo.entity.Transaction;
 import com.stockexchange.demo.service.OfferService;
 import com.stockexchange.demo.service.RequestService;
@@ -11,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/transactions")
@@ -49,5 +48,21 @@ public class    TransactionController {
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         transactionService.deleteTransaction(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/user/{userId}")
+    public Set<Transaction> getTransactionsByUserId(@PathVariable Long userId) {
+          Set<Transaction> transactions = transactionService.getTransactionByUserId(userId);
+          return transactions;
+
+    }
+
+    @GetMapping("/offer/{offerId}")
+    public List<Transaction> getTransactionsByOfferId(@PathVariable Long offerId) {
+        return transactionService.getTransactionsByOfferId(offerId);
+    }
+    @GetMapping("/requests/{requestId}")
+    public List<Transaction> getTransactionsByRequestId(@PathVariable Long requestId) {
+        return transactionService.getTransactionsByRequestId(requestId);
     }
 }
