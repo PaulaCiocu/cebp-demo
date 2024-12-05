@@ -37,6 +37,12 @@ public class TransactionService {
         Request request = requestService.getRequestById(requestId)
                .orElseThrow(() -> new IllegalArgumentException("Request not found with ID: " + requestId));
 
+        // Check if the stock IDs match between the offer and the request
+        if (!offer.getStock().getId().equals(request.getStock().getId())) {
+            // If stock IDs don't match, return a bad request response
+            return ResponseEntity.badRequest().body(null);
+        }
+
         int quantity = Math.min(offer.getQuantity(), request.getQuantity());
         double pricePerShare = offer.getPricePerShare();
 
