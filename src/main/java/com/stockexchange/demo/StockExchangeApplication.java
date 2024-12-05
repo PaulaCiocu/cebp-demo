@@ -17,7 +17,7 @@ public class StockExchangeApplication {
 		SpringApplication.run(StockExchangeApplication.class, args);
 
 		//ToDo: Uncomment this if you want to run locally. Lines commented for EC2 Instance JAR
-		/*
+
 		try {
 			String url = "http://localhost:8000/swagger-ui/index.html";
 			String os = System.getProperty("os.name").toLowerCase();
@@ -34,7 +34,7 @@ public class StockExchangeApplication {
 		} catch (Exception e) {
 			System.err.println("Failed to open Swagger UI: " + e.getMessage());
 		}
-		 */
+
 	}
 
 }

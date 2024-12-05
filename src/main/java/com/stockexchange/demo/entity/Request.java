@@ -25,7 +25,7 @@ public class Request {
     private Stock stock;
 
     @ManyToOne
-    @JoinColumn(name = "buyer_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(nullable = false)

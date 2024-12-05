@@ -15,7 +15,6 @@ public class Offer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Integer quantity;
     private Double pricePerShare;
 
@@ -24,7 +23,7 @@ public class Offer {
     private Stock stock;
 
     @ManyToOne
-    @JoinColumn(name = "seller_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(nullable = false)

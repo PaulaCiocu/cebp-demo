@@ -38,6 +38,14 @@ public class OfferController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<List<Offer>> getOfferByUserId(@PathVariable Long userId) {
+        return offerService.getOfferByUserId(userId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
     @PatchMapping("/{id}")
     public ResponseEntity<Offer> updateOffer(@PathVariable Long id, @RequestBody OfferDto offerDetails) {
         try {

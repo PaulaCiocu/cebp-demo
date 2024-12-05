@@ -30,7 +30,7 @@ public class RequestService {
 
         Request newRequest = new Request();
 
-        User buyer = userRepository.findOneById(request.getBuyerId());
+        User buyer = userRepository.findOneById(request.getUserId());
 
         Stock stock = stockRepository.findOneById(request.getStockId());
 
@@ -63,8 +63,8 @@ public class RequestService {
             existingRequest.setQuantity(requestDetails.getQuantity());
         }
 
-        if (requestDetails.getBuyerId() != null) {
-            User newBuyer = userRepository.findOneById(requestDetails.getBuyerId());
+        if (requestDetails.getUserId() != null) {
+            User newBuyer = userRepository.findOneById(requestDetails.getUserId());
             existingRequest.setUser(newBuyer);
         }
 
@@ -79,5 +79,10 @@ public class RequestService {
 
     public void deleteRequest(Long id) {
         requestRepository.deleteById(id);
+    }
+
+    public Optional<List<Request>> getRequestByUserId(Long userId) {
+        List<Request> requests = requestRepository.findByUserId(userId);
+        return requests.isEmpty() ? Optional.empty() : Optional.of(requests);
     }
 }

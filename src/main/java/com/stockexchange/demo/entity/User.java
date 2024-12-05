@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -24,6 +26,8 @@ public class User {
     private String email;
 
     private String password;
+
+
 
     //oferte
     //request

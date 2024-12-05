@@ -1,6 +1,8 @@
 package com.stockexchange.demo.controller;
 
 import com.stockexchange.demo.dto.User.UserCreateDto;
+import com.stockexchange.demo.entity.Offer;
+import com.stockexchange.demo.entity.Request;
 import com.stockexchange.demo.entity.User;
 import com.stockexchange.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,5 +54,19 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{userId}/offers")
+    public ResponseEntity<List<Offer>> getUserOffers(@PathVariable Long userId) {
+        return userService.getOffersByUserId(userId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{userId}/requests")
+    public ResponseEntity<List<Request>> getRequestsOffers(@PathVariable Long userId) {
+        return userService.getRequestsByUserId(userId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

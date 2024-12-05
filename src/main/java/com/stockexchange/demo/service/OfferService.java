@@ -34,7 +34,7 @@ public class OfferService {
 
         Offer newOffer = new Offer();
 
-        User seller = userRepository.findOneById(offer.getSellerId());
+        User seller = userRepository.findOneById(offer.getUserId());
         Stock stock = stockRepository.findOneById(offer.getStockId());
 
         newOffer.setQuantity(offer.getQuantity());
@@ -66,8 +66,8 @@ public class OfferService {
             existingOffer.setPricePerShare(offerDetails.getPricePerShare());
         }
 
-        if (offerDetails.getSellerId() != null) {
-            User newSeller = userRepository.findOneById(offerDetails.getSellerId());
+        if (offerDetails.getUserId() != null) {
+            User newSeller = userRepository.findOneById(offerDetails.getUserId());
             existingOffer.setUser(newSeller);
         }
 
@@ -81,5 +81,10 @@ public class OfferService {
 
     public void deleteOffer(Long id) {
         offerRepository.deleteById(id);
+    }
+
+    public Optional<List<Offer>> getOfferByUserId(Long userId) {
+        List<Offer> offers = offerRepository.findByUserId(userId);
+        return offers.isEmpty() ? Optional.empty() : Optional.of(offers);
     }
 }

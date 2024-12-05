@@ -14,5 +14,5 @@ public class RequestDto {
         private Integer quantity;
         private Double maxPricePerShare;
         private Long stockId;
-        private Long buyerId;
+        private Long userId;
 }

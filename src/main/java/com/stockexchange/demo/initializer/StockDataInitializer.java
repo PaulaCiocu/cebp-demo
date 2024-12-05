@@ -3,7 +3,6 @@ package com.stockexchange.demo.initializer;
 import com.stockexchange.demo.entity.Stock;
 import com.stockexchange.demo.repository.StockRepository;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;

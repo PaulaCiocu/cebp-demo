@@ -1,6 +1,7 @@
 package com.stockexchange.demo.controller;
 
 import com.stockexchange.demo.dto.Request.RequestDto;
+import com.stockexchange.demo.entity.Offer;
 import com.stockexchange.demo.entity.Request;
 import com.stockexchange.demo.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,12 @@ public class RequestController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<List<Request>> getRequestByUserId(@PathVariable Long userId) {
+        return requestService.getRequestByUserId(userId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Request> updateRequest(@PathVariable Long id, @RequestBody RequestDto requestDetails) {
@@ -53,5 +60,6 @@ public class RequestController {
         requestService.deleteRequest(id);
         return ResponseEntity.noContent().build();
     }
+
 }
 
