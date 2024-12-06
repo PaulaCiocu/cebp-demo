@@ -13,6 +13,9 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
+// react
+import { useState } from "react";
+
 // react-router-dom components
 import { Link } from "react-router-dom";
 
@@ -27,14 +30,45 @@ import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 
 // Authentication layout components
-import CoverLayout from "layouts/authentication/components/CoverLayout";
+import BasicLayout from "../components/BasicLayout";
 
-// Images
-import bgImage from "assets/images/bg-sign-up-cover.jpeg";
+// Import axios
+import axios from "axios";
+
+import { useNavigate } from "react-router-dom";
 
 function Cover() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [termsChecked, setTermsChecked] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const userData = {
+      name,
+      email,
+      password,
+    };
+
+    try {
+      const response = await axios.post("http://localhost:8000/users", userData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("User created successfully:", response.data);
+      localStorage.setItem("isAuthenticated", "true");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error creating user:", error.response?.data || error.message);
+    }
+  };
+
   return (
-    <CoverLayout image={bgImage}>
+    <BasicLayout>
       <Card>
         <MDBox
           variant="gradient"
@@ -48,32 +82,56 @@ function Cover() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Join us today
+            Create a new account
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
             Enter your email and password to register
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
-          <MDBox component="form" role="form">
+          <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
-              <MDInput type="text" label="Name" variant="standard" fullWidth />
+              <MDInput
+                type="text"
+                label="Name"
+                variant="standard"
+                fullWidth
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" variant="standard" fullWidth />
+              <MDInput
+                type="email"
+                label="Email"
+                variant="standard"
+                fullWidth
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" variant="standard" fullWidth />
+              <MDInput
+                type="password"
+                label="Password"
+                variant="standard"
+                fullWidth
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
-              <Checkbox />
+              <Checkbox
+                checked={termsChecked}
+                onChange={(e) => setTermsChecked(e.target.checked)}
+              />
               <MDTypography
                 variant="button"
                 fontWeight="regular"
                 color="text"
                 sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
               >
-                &nbsp;&nbsp;I agree the&nbsp;
+                &nbsp;&nbsp;I agree to the&nbsp;
               </MDTypography>
               <MDTypography
                 component="a"
@@ -87,8 +145,14 @@ function Cover() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
-                sign in
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={!termsChecked}
+              >
+                Sign Up
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
@@ -102,14 +166,14 @@ function Cover() {
                   fontWeight="medium"
                   textGradient
                 >
-                  Sign In
+                  Sign in
                 </MDTypography>
               </MDTypography>
             </MDBox>
           </MDBox>
         </MDBox>
       </Card>
-    </CoverLayout>
+    </BasicLayout>
   );
 }
 

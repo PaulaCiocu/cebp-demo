@@ -47,19 +47,40 @@ import SignUp from "layouts/authentication/sign-up";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
+import PublicRoute from "core/publicroute";
+import PrivateRoute from "core/privateroute";
+import DashboardStock from "layouts/dashboard";
 
 const routes = [
+  {
+    type: "collapse",
+    hidden: true,
+    name: "Sign Up",
+    key: "sign-up",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/authentication/sign-up",
+    component: (
+      <PublicRoute>
+        <SignUp />
+      </PublicRoute>
+    ),
+  },
   {
     type: "collapse",
     name: "Dashboard",
     key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
-    component: <Dashboard />,
+    component: (
+      <PrivateRoute>
+        <DashboardStock />
+      </PrivateRoute>
+    ),
   },
   {
     type: "collapse",
     name: "Tables",
+    hidden: true,
     key: "tables",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/tables",
@@ -68,6 +89,7 @@ const routes = [
   {
     type: "collapse",
     name: "Billing",
+    hidden: true,
     key: "billing",
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/billing",
@@ -76,6 +98,7 @@ const routes = [
   {
     type: "collapse",
     name: "RTL",
+    hidden: true,
     key: "rtl",
     icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
     route: "/rtl",
@@ -84,6 +107,7 @@ const routes = [
   {
     type: "collapse",
     name: "Notifications",
+    hidden: true,
     key: "notifications",
     icon: <Icon fontSize="small">notifications</Icon>,
     route: "/notifications",
@@ -92,6 +116,7 @@ const routes = [
   {
     type: "collapse",
     name: "Profile",
+    hidden: true,
     key: "profile",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
@@ -100,18 +125,15 @@ const routes = [
   {
     type: "collapse",
     name: "Sign In",
+    hidden: true,
     key: "sign-in",
     icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-  },
-  {
-    type: "collapse",
-    name: "Sign Up",
-    key: "sign-up",
-    icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
+    route: "/login",
+    component: (
+      <PublicRoute>
+        <SignIn />
+      </PublicRoute>
+    ),
   },
 ];
 
