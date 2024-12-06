@@ -1,17 +1,18 @@
 package com.stockexchange.demo.controller;
 
+import com.stockexchange.demo.dto.User.LoginRequestDto;
 import com.stockexchange.demo.dto.User.UserCreateDto;
 import com.stockexchange.demo.entity.Offer;
 import com.stockexchange.demo.entity.Request;
 import com.stockexchange.demo.entity.Transaction;
 import com.stockexchange.demo.entity.User;
-import com.stockexchange.demo.service.TransactionService;
 import com.stockexchange.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 import java.util.Set;
 
 
@@ -30,6 +31,12 @@ public class UserController {
     public User createUser(@RequestBody UserCreateDto user) {
         return userService.createUser(user);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> authenticate(@RequestBody LoginRequestDto loginRequestDto) {
+        return userService.authenticate(loginRequestDto);
+    }
+
 
     @GetMapping
     public List<User> getAllUsers() {

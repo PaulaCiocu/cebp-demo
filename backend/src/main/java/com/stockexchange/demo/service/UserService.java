@@ -1,11 +1,13 @@
 package com.stockexchange.demo.service;
-
+import com.stockexchange.demo.dto.User.LoginRequestDto;
 import com.stockexchange.demo.dto.User.UserCreateDto;
 import com.stockexchange.demo.entity.Offer;
 import com.stockexchange.demo.entity.Request;
 import com.stockexchange.demo.entity.Transaction;
 import com.stockexchange.demo.entity.User;
 import com.stockexchange.demo.repository.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +21,14 @@ public class UserService {
     private final RequestService requestService;
     private final TransactionService transactionService;
 
+
+
     public UserService(UserRepository userRepository, OfferService offerService, RequestService requestService, TransactionService transactionService) {
         this.userRepository = userRepository;
         this.offerService = offerService;
         this.requestService = requestService;
         this.transactionService = transactionService;
+
     }
 
     public User createUser(UserCreateDto userCreateDto) {
@@ -69,6 +74,20 @@ public class UserService {
 
     public Set<Transaction> getTransactionsByUserId(Long id) {
         return transactionService.getTransactionByUserId(id);
+    }
+
+    public ResponseEntity<String> authenticate(LoginRequestDto loginRequestDto) {
+        // Find user by email
+        User user = userRepository.findByEmail(loginRequestDto.getEmail())
+                .orElse(null);
+
+        // Check if user exists and password matches
+        if (user == null || !loginRequestDto.getPassword().equals(user.getPassword())) {
+            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+        }
+
+        // Return success message
+        return new ResponseEntity<>("Authentication successful", HttpStatus.OK);
     }
 
 
