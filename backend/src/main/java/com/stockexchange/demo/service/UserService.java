@@ -32,12 +32,17 @@ public class UserService {
     }
 
     public User createUser(UserCreateDto userCreateDto) {
+        // Check if email already exists in the database
+        if (userRepository.findByEmail(userCreateDto.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+
         User newUser = new User();
         newUser.setEmail(userCreateDto.getEmail());
         newUser.setName(userCreateDto.getName());
         newUser.setPassword(userCreateDto.getPassword());
 
-       return userRepository.save(newUser);
+        return userRepository.save(newUser);
     }
 
     public List<User> getAllUsers() {

@@ -8,6 +8,7 @@ import com.stockexchange.demo.entity.Transaction;
 import com.stockexchange.demo.entity.User;
 import com.stockexchange.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,10 +29,16 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody UserCreateDto user) {
-        return userService.createUser(user);
+    public ResponseEntity<?> createUser(@RequestBody UserCreateDto user) {
+        try {
+            // Try to create a new user
+            User newUser = userService.createUser(user);
+            return new ResponseEntity<>(newUser, HttpStatus.CREATED); // Return the created user with status 201
+        } catch (RuntimeException e) {
+            // If email already exists, catch the exception and return a bad request response
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
-
     @PostMapping("/login")
     public ResponseEntity<String> authenticate(@RequestBody LoginRequestDto loginRequestDto) {
         return userService.authenticate(loginRequestDto);
