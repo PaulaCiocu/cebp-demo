@@ -38,8 +38,9 @@ public class RequestController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<Request>> getRequestByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<Request>> getRequestsByUserId(@PathVariable Long userId) {
         return requestService.getRequestByUserId(userId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
