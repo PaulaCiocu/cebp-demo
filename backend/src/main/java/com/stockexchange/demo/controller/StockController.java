@@ -1,6 +1,8 @@
 package com.stockexchange.demo.controller;
 
 import com.stockexchange.demo.dto.Stock.StockDto;
+import com.stockexchange.demo.entity.Offer;
+import com.stockexchange.demo.entity.Request;
 import com.stockexchange.demo.entity.Stock;
 import com.stockexchange.demo.service.StockService;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,16 @@ public class StockController {
     @GetMapping
     public List<Stock> getAllStocks() {
         return stockService.getAllStocks();
+    }
+
+    @GetMapping("/{stockId}/offers")
+    public List<Offer> getAllOffersOfStock(@PathVariable Long stockId) {
+        return stockService.getAllOffers(stockId);
+    }
+
+    @GetMapping("/{stockId}/requests")
+    public List<Request> getAllRequestsOfStock(@PathVariable Long stockId) {
+        return stockService.getAllRequests(stockId);
     }
 
     @GetMapping("/{id}")

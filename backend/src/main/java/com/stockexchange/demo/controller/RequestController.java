@@ -46,6 +46,14 @@ public class RequestController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/requests/{stockId}")
+    public ResponseEntity<List<Request>> getRequestsByStockId(@PathVariable Long stockId) {
+        return requestService.getRequestByUserId(stockId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
     @PatchMapping("/{id}")
     public ResponseEntity<Request> updateRequest(@PathVariable Long id, @RequestBody RequestDto requestDetails) {
         try {

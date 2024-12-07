@@ -1,7 +1,10 @@
 package com.stockexchange.demo.service;
 
 import com.stockexchange.demo.dto.Stock.StockDto;
+import com.stockexchange.demo.entity.Offer;
+import com.stockexchange.demo.entity.Request;
 import com.stockexchange.demo.entity.Stock;
+import com.stockexchange.demo.repository.OfferRepository;
 import com.stockexchange.demo.repository.StockRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +15,14 @@ import java.util.Optional;
 public class StockService {
 
     private final StockRepository stockRepository;
+    private final OfferService offerService;
+    private final RequestService requestService;
 
 
-    public StockService(StockRepository stockRepository) {
+    public StockService(StockRepository stockRepository, OfferService offerService, RequestService requestService, RequestService requestService1) {
         this.stockRepository = stockRepository;
+        this.offerService = offerService;
+        this.requestService = requestService1;
     }
 
     public Stock createStock(StockDto stock) {
@@ -53,6 +60,14 @@ public class StockService {
 
     public void deleteStock(Long id) {
         stockRepository.deleteById(id);
+    }
+
+    public List<Offer> getAllOffers(Long id) {
+        return offerService.getAllOffersByStockId(id);
+    }
+
+    public List<Request> getAllRequests(Long stockId) {
+        return requestService.getAllRequestsByStockId(stockId);
     }
 }
 

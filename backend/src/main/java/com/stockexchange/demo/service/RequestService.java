@@ -85,4 +85,9 @@ public class RequestService {
         List<Request> requests = requestRepository.findByUserId(userId);
         return requests.isEmpty() ? Optional.empty() : Optional.of(requests);
     }
+
+    public List<Request> getAllRequestsByStockId(Long stockId) {
+        List<Request> requests = requestRepository.findByStockId(stockId);
+        return requests;
+    }
 }

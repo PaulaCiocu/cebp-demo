@@ -87,4 +87,9 @@ public class OfferService {
         List<Offer> offers = offerRepository.findByUserId(userId);
         return offers.isEmpty() ? Optional.empty() : Optional.of(offers);
     }
+
+    public List<Offer> getAllOffersByStockId(Long id) {
+        List<Offer> offers = offerRepository.findByStockId(id);
+        return offers;
+    }
 }
