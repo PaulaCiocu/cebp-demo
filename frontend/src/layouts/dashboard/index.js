@@ -56,7 +56,7 @@ function DashboardStock() {
               <ComplexStatisticsCard
                 color="success"
                 icon="store"
-                title="Number of Stocks"
+                title="Stock Providers"
                 count={stockCount}
                 percentage={{
                   label: "Stocks you can invest to",

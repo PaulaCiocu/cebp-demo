@@ -23,8 +23,9 @@ export default function data(stocks) {
   return {
     columns: [
       { Header: "company", accessor: "companyName", width: "45%", align: "left" },
-      { Header: "total shares", accessor: "totalShares", width: "10%", align: "left" },
+      { Header: "total stocks", accessor: "totalShares", width: "10%", align: "left" },
       { Header: "offers", accessor: "quantity", width: "10%", align: "left" },
+      { Header: "stock price", accessor: "stockPrice", width: "10%", align: "left" },
     ],
 
     rows: stocks.map((stock) => ({
@@ -41,6 +42,11 @@ export default function data(stocks) {
       quantity: (
         <MDTypography variant="button" fontWeight="medium" lineHeight={1}>
           {stock.offers.reduce((sum, offer) => sum + offer.quantity, 0)}
+        </MDTypography>
+      ),
+      stockPrice: (
+        <MDTypography variant="button" fontWeight="medium" lineHeight={1}>
+          ${stock.offers.map((offer) => offer.pricePerShare)}
         </MDTypography>
       ),
     })),
