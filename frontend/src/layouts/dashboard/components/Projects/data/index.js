@@ -17,12 +17,14 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React components
 import MDTypography from "components/MDTypography";
+import Header from "layouts/profile/components/Header";
 
 export default function data(stocks) {
   return {
     columns: [
       { Header: "company", accessor: "companyName", width: "45%", align: "left" },
       { Header: "total shares", accessor: "totalShares", width: "10%", align: "left" },
+      { Header: "offers", accessor: "quantity", width: "10%", align: "left" },
     ],
 
     rows: stocks.map((stock) => ({
@@ -34,6 +36,11 @@ export default function data(stocks) {
       totalShares: (
         <MDTypography variant="caption" color="text" fontWeight="medium">
           {stock.totalShares}
+        </MDTypography>
+      ),
+      quantity: (
+        <MDTypography variant="button" fontWeight="medium" lineHeight={1}>
+          {stock.offers.reduce((sum, offer) => sum + offer.quantity, 0)}
         </MDTypography>
       ),
     })),

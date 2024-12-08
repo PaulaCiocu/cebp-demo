@@ -33,6 +33,8 @@ import DataTable from "examples/Tables/DataTable";
 import data from "layouts/dashboard/components/Projects/data";
 
 function Projects() {
+  const [stockCount, setStockCount] = useState(0);
+  const [error, setError] = useState("");
   const [menu, setMenu] = useState(null);
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
@@ -44,17 +46,34 @@ function Projects() {
     const fetchStocks = async () => {
       try {
         const response = await axios.get("http://localhost:8000/stocks");
-        setStocks(response.data);
-      } catch (error) {
-        console.error("Error fetching stocks:", error);
+        setStockCount(response.data.length);
+
+        // Fetch offers for each stock
+        const stocksWithOffers = await Promise.all(
+          response.data.map(async (stock) => {
+            try {
+              const offersResponse = await axios.get(
+                `http://localhost:8000/stocks/${stock.id}/offers`
+              );
+              return { ...stock, offers: offersResponse.data };
+            } catch (err) {
+              console.error(`Error fetching offers for stock ${stock.id}:`, err);
+              return { ...stock, offers: [] };
+            }
+          })
+        );
+        setStocks(stocksWithOffers);
+      } catch (err) {
+        console.error("Error fetching stocks:", err);
+        setError("Failed to fetch stocks");
       }
     };
 
     fetchStocks();
   }, []);
-
   const { columns, rows } = data(stocks);
 
+  console.log(stocks);
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>

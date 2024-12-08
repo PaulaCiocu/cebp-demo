@@ -1,67 +1,52 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// react
 import { useState, useEffect } from "react";
-
-// @mui material components
 import Grid from "@mui/material/Grid";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-
-// Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
-import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
-import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
-
-// Data
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
-import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
-
-// Dashboard components
-import Projects from "layouts/dashboard/components/Projects";
-import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
-
-// Import axios
 import axios from "axios";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Projects from "layouts/dashboard/components/Projects";
 
 function DashboardStock() {
-  const { sales, tasks } = reportsLineChartData;
+  const [stocks, setStocks] = useState([]);
   const [stockCount, setStockCount] = useState("...");
+  const [error, setError] = useState(null);
 
-  // Fetch the stock data when the component mounts
   useEffect(() => {
     const fetchStocks = async () => {
       try {
         const response = await axios.get("http://localhost:8000/stocks");
-        // Assuming the response returns an array of stocks
-        // Update stockCount with the length of the returned data
         setStockCount(response.data.length);
-      } catch (error) {
-        console.error("Error fetching stocks:", error);
-        setStockCount("N/A");
+
+        // Fetch offers for each stock
+        const stocksWithOffers = await Promise.all(
+          response.data.map(async (stock) => {
+            try {
+              const offersResponse = await axios.get(
+                `http://localhost:8000/stocks/${stock.id}/offers`
+              );
+              return { ...stock, offers: offersResponse.data };
+            } catch (err) {
+              console.error(`Error fetching offers for stock ${stock.id}:`, err);
+              return { ...stock, offers: [] };
+            }
+          })
+        );
+        setStocks(stocksWithOffers);
+      } catch (err) {
+        console.error("Error fetching stocks:", err);
+        setError("Failed to fetch stocks");
       }
     };
 
     fetchStocks();
-  }, []); // Empty dependency array ensures this runs once on mount
-
+  }, []);
   return (
     <DashboardLayout>
       <MDBox py={3}>
