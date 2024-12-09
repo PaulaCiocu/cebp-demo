@@ -125,12 +125,6 @@ function Projects() {
       return;
     }
 
-    const maxQuantity = selectedStock.offers.length;
-    if (quantity > maxQuantity) {
-      alert(`Quantity cannot exceed ${maxQuantity}`);
-      return;
-    }
-
     try {
       await axios.post("http://localhost:8000/requests", {
         quantity,
