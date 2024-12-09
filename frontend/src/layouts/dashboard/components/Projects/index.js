@@ -109,7 +109,7 @@ function Projects() {
   };
 
   const incrementQuantity = () => {
-      setQuantity(quantity + 1);
+    setQuantity(quantity + 1);
   };
 
   const decrementQuantity = () => {
