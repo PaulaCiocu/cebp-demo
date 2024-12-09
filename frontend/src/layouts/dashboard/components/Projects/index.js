@@ -109,11 +109,7 @@ function Projects() {
   };
 
   const incrementQuantity = () => {
-    const selectedStock = stocks.find((s) => s.id === selectedStockId);
-    const maxQuantity = selectedStock ? selectedStock.offers.length : 0;
-    if (quantity < maxQuantity) {
       setQuantity(quantity + 1);
-    }
   };
 
   const decrementQuantity = () => {
