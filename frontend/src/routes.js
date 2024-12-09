@@ -50,6 +50,7 @@ import Icon from "@mui/material/Icon";
 import PublicRoute from "core/publicroute";
 import PrivateRoute from "core/privateroute";
 import DashboardStock from "layouts/dashboard";
+import MyRequests from "layouts/requests";
 
 const routes = [
   {
@@ -74,6 +75,18 @@ const routes = [
     component: (
       <PrivateRoute>
         <DashboardStock />
+      </PrivateRoute>
+    ),
+  },
+  {
+    type: "collapse",
+    name: "My Requests",
+    key: "my-requests",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/user/requests",
+    component: (
+      <PrivateRoute>
+        <MyRequests />
       </PrivateRoute>
     ),
   },

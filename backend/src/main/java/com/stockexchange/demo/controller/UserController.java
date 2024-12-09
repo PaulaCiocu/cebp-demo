@@ -1,6 +1,7 @@
 package com.stockexchange.demo.controller;
 
 import com.stockexchange.demo.dto.User.LoginRequestDto;
+import com.stockexchange.demo.dto.User.LoginResponseDto;
 import com.stockexchange.demo.dto.User.UserCreateDto;
 import com.stockexchange.demo.entity.Offer;
 import com.stockexchange.demo.entity.Request;
@@ -39,10 +40,11 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @PostMapping("/login")
-    public ResponseEntity<String> authenticate(@RequestBody LoginRequestDto loginRequestDto) {
+    @PostMapping(value = "/login", produces = "application/json")
+    public ResponseEntity<LoginResponseDto> authenticate(@RequestBody LoginRequestDto loginRequestDto) {
         return userService.authenticate(loginRequestDto);
     }
+
 
 
     @GetMapping

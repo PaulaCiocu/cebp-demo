@@ -1,40 +1,14 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-// @mui material components
+import axios from "axios";
 import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
-
-// Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 
-// Images
-import bgImage from "assets/images/bg-sign-in-basic.jpeg";
-
-// Axios
-import axios from "axios";
-
-function Basic() {
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -46,12 +20,17 @@ function Basic() {
 
     try {
       const response = await axios.post("http://localhost:8000/users/login", {
+        headers: {
+          "Content-Type": "application/json",
+        },
         email,
         password,
       });
 
-      // Assuming the response is successful and includes user info or a token
+      // Assuming response.data contains { userId: "...", ... }
       localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("userId", response.data.userId);
+
       navigate("/dashboard");
     } catch (error) {
       console.error("Login error:", error.response?.data || error.message);
@@ -131,4 +110,4 @@ function Basic() {
   );
 }
 
-export default Basic;
+export default Login;
