@@ -2,16 +2,8 @@ import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import axios from "axios";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import Projects from "layouts/dashboard/components/Projects";
+
 import Requests from "layouts/dashboard/components/Projects/index2";
 
 function MyRequests() {
@@ -34,7 +26,7 @@ function MyRequests() {
               );
               return { ...stock, offers: offersResponse.data };
             } catch (err) {
-              console.error(`Error fetching offers for stock ${stock.id}:`, err);
+              console.error(`You do not have any pending orders${stock.id}:`, err);
               return { ...stock, offers: [] };
             }
           })
@@ -42,7 +34,7 @@ function MyRequests() {
         setStocks(stocksWithOffers);
       } catch (err) {
         console.error("Error fetching stocks:", err);
-        setError("Failed to fetch stocks");
+        setError("");
       }
     };
 
