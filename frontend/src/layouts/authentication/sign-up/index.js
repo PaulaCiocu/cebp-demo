@@ -61,6 +61,7 @@ function Cover() {
       });
       console.log("User created successfully:", response.data);
       localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("userId", response.data.userId);
       navigate("/dashboard");
     } catch (error) {
       console.error("Error creating user:", error.response?.data || error.message);

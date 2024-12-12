@@ -51,6 +51,7 @@ import PublicRoute from "core/publicroute";
 import PrivateRoute from "core/privateroute";
 import DashboardStock from "layouts/dashboard";
 import MyRequests from "layouts/requests";
+import MyTransactions from "layouts/transactions";
 
 const routes = [
   {
@@ -81,9 +82,9 @@ const routes = [
   {
     type: "collapse",
     name: "My Requests",
-    key: "my-requests",
+    key: "requests",
     icon: <Icon fontSize="small">person</Icon>,
-    route: "/user/requests",
+    route: "/requests",
     component: (
       <PrivateRoute>
         <MyRequests />
@@ -101,12 +102,11 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Billing",
-    hidden: true,
-    key: "billing",
+    name: "Transactions",
+    key: "transactions",
     icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: <Billing />,
+    route: "/transactions",
+    component: <MyTransactions />,
   },
   {
     type: "collapse",
