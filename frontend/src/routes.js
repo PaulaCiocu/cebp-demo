@@ -81,8 +81,8 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "My Requests",
-    key: "requests",
+    name: "Pending orders",
+    key: "my-requests",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/requests",
     component: (

@@ -1,33 +1,15 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/function-component-definition */
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
+import MDTypography from "../../../../../components/MDTypography";
+import MDButton from "../../../../../components/MDButton";
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// Material Dashboard 2 React components
-import MDTypography from "components/MDTypography";
-import Header from "layouts/profile/components/Header";
-
-export default function data(stocks) {
+export default function data(stocks, handleOpenDialog) {
   return {
     columns: [
       { Header: "company", accessor: "companyName", width: "45%", align: "left" },
       { Header: "total stocks", accessor: "totalShares", width: "10%", align: "left" },
       { Header: "offers", accessor: "quantity", width: "10%", align: "left" },
       { Header: "stock price", accessor: "stockPrice", width: "10%", align: "left" },
+      { Header: "Add request", accessor: "addRequest", width: "10%", align: "left" },
     ],
-
     rows: stocks.map((stock) => ({
       companyName: (
         <MDTypography variant="button" fontWeight="medium" lineHeight={1}>
@@ -46,8 +28,13 @@ export default function data(stocks) {
       ),
       stockPrice: (
         <MDTypography variant="button" fontWeight="medium" lineHeight={1}>
-          ${stock.offers.map((offer) => offer.pricePerShare)}
+          ${stock.offers[0]?.pricePerShare || "N/A"} {/* Show the first price per share */}
         </MDTypography>
+      ),
+      addRequest: (
+        <MDButton variant="gradient" color="info" onClick={() => handleOpenDialog(stock.id)}>
+          Create Request
+        </MDButton>
       ),
     })),
   };
