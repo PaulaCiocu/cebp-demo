@@ -1,31 +1,15 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim
-* Coded by www.creative-tim.com
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import Grid from "@mui/material/Grid";
+import Pagination from "@mui/material/Pagination";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
@@ -34,36 +18,23 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 
-// Material Dashboard 2 React examples
-import DataTable from "examples/Tables/DataTable";
-
-// Data
-import data from "layouts/dashboard/components/Projects/data";
-
 function Projects() {
-  const [stockCount, setStockCount] = useState(0);
-  const [error, setError] = useState("");
-  const [menu, setMenu] = useState(null);
   const [stocks, setStocks] = useState([]);
-
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedStockId, setSelectedStockId] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [maxPricePerShare, setMaxPricePerShare] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const stocksPerPage = 8;
 
   // Retrieve userId from localStorage
   const userId = localStorage.getItem("userId");
-
-  const openMenu = ({ currentTarget }) => setMenu(currentTarget);
-  const closeMenu = () => setMenu(null);
 
   useEffect(() => {
     const fetchStocks = async () => {
       try {
         const response = await axios.get("http://localhost:8000/stocks");
-        setStockCount(response.data.length);
 
-        // Fetch offers for each stock
         const stocksWithOffers = await Promise.all(
           response.data.map(async (stock) => {
             try {
@@ -80,20 +51,14 @@ function Projects() {
         setStocks(stocksWithOffers);
       } catch (err) {
         console.error("Error fetching stocks:", err);
-        setError("Failed to fetch stocks");
       }
     };
 
     fetchStocks();
   }, []);
 
-  const { columns, rows } = data(stocks);
-
-  const handleOpenDialog = () => {
-    // Reset dialog state when opening
-    if (stocks.length > 0) {
-      setSelectedStockId(stocks[0].id);
-    }
+  const handleOpenDialog = (stockId) => {
+    setSelectedStockId(stockId);
     setQuantity(1);
     setMaxPricePerShare("");
     setOpenDialog(true);
@@ -103,34 +68,13 @@ function Projects() {
     setOpenDialog(false);
   };
 
-  const handleStockChange = (event) => {
-    setSelectedStockId(event.target.value);
-    setQuantity(1); // Reset quantity when changing stock
-  };
-
-  const incrementQuantity = () => {
-    setQuantity(quantity + 1);
-  };
-
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-
   const handleConfirmRequest = async () => {
-    const selectedStock = stocks.find((s) => s.id === selectedStockId);
-    if (!selectedStock) {
-      console.error("No stock selected!");
-      return;
-    }
-
     try {
       await axios.post("http://localhost:8000/requests", {
         quantity,
         maxPricePerShare: parseFloat(maxPricePerShare),
         stockId: selectedStockId,
-        userId, // Now we are sending the userId from localStorage
+        userId,
       });
       alert("Request created successfully!");
       handleCloseDialog();
@@ -140,78 +84,153 @@ function Projects() {
     }
   };
 
+  const indexOfLastStock = currentPage * stocksPerPage;
+  const indexOfFirstStock = indexOfLastStock - stocksPerPage;
+  const currentStocks = stocks.slice(indexOfFirstStock, indexOfLastStock);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
+  const handleQuantityChange = (event) => {
+    const value = Math.max(1, parseInt(event.target.value, 10) || 1);
+    setQuantity(value);
+  };
+
   return (
     <Card>
-      <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-        <MDTypography variant="h6" gutterBottom>
-          Stocks
+      <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3} mb={-5}>
+        <MDTypography variant="h3" gutterBottom>
+        Stocks
         </MDTypography>
-        <MDButton variant="gradient" color="info" onClick={handleOpenDialog}>
-          Create Request
-        </MDButton>
       </MDBox>
-      <MDBox>
-        <DataTable
-          table={{ columns, rows }}
-          showTotalEntries={false}
-          isSorted={false}
-          noEndBorder
-          entriesPerPage={false}
-        />
+      <MDBox p={2}>
+        <Grid container spacing={3}>
+          {currentStocks.map((stock) => (
+            <Grid item xs={12} sm={6} md={3} key={stock.id}>
+              <Card>
+                <MDBox p={2}
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+                >
+                  <MDBox mb={1}>
+                    <MDTypography variant="h5" color="black" fontWeight="bold">
+                      {stock.companyName}
+                    </MDTypography>
+                  </MDBox>
+                  
+                  <MDBox mb={1}>
+                    <MDTypography variant="button" color="black" fontWeight="regular">
+                      Available Stocks: {stock.offers.reduce((sum, offer) => sum + offer.quantity, 0)}
+                    </MDTypography>
+                  </MDBox>
+                  <MDBox mb={1}>
+                    <MDTypography variant="button" color="black" fontWeight="regular">
+                      Stock Price: ${stock.offers[0]?.pricePerShare || "N/A"}
+                    </MDTypography>
+                  </MDBox>
+                  <MDButton
+                    variant="gradient"
+                    color="info"
+                    size="small"
+                    onClick={() => handleOpenDialog(stock.id)}
+                  >
+                    Create Request
+                  </MDButton>
+                </MDBox>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+        <MDBox mt={3} display="flex" justifyContent="center">
+          <Pagination
+            count={Math.ceil(stocks.length / stocksPerPage)}
+            page={currentPage}
+            onChange={handlePageChange}
+            color="primary"
+          />
+        </MDBox>
       </MDBox>
 
       <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
-        <DialogTitle>Create a Stock Request</DialogTitle>
-        <DialogContent>
-          {stocks.length === 0 ? (
-            <MDTypography variant="caption" color="text">
-              No stocks available
-            </MDTypography>
-          ) : (
-            <>
-              <FormControl fullWidth margin="normal">
-                <InputLabel>Stock</InputLabel>
-                <Select value={selectedStockId} label="Stock" onChange={handleStockChange}>
-                  {stocks.map((stock) => (
-                    <MenuItem key={stock.id} value={stock.id}>
-                      {stock.companyName || `Stock #${stock.id}`}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              <MDBox display="flex" alignItems="center" mt={2} mb={2}>
-                <Button variant="outlined" onClick={decrementQuantity} disabled={quantity <= 1}>
-                  -
-                </Button>
-                <MDTypography variant="h6" mx={2}>
-                  {quantity}
-                </MDTypography>
-                <Button variant="outlined" onClick={incrementQuantity}>
-                  +
-                </Button>
-              </MDBox>
-
-              <TextField
-                label="Max Price Per Share"
-                fullWidth
-                variant="outlined"
-                type="number"
-                value={maxPricePerShare}
-                onChange={(e) => setMaxPricePerShare(e.target.value)}
-              />
-            </>
-          )}
+        <DialogTitle
+          style={{ textAlign: "center", padding: "16px" }}
+        >
+          <MDTypography variant="h5" fontWeight="bold">
+            Create a Stock Request
+          </MDTypography>
+        </DialogTitle>
+        <DialogContent style={{ padding: "24px" }}>
+          <MDBox mb={3}>
+            <TextField
+              label="Stock Name"
+              fullWidth
+              variant="outlined"
+              value={stocks.find((stock) => stock.id === selectedStockId)?.companyName || ""}
+              InputProps={{ readOnly: true, style: { pointerEvents: "none" } }}
+              style={{ backgroundColor: "#ffffff" }}
+            />
+          </MDBox>
+          <MDBox display="flex" alignItems="center" justifyContent="center" mb={3}>
+            <Button
+              variant="outlined"
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              style={{
+                minWidth: "50px",
+                fontWeight: "bold",
+                color: "#000",
+              }}
+            >
+              -
+            </Button>
+            <TextField
+              value={quantity}
+              onChange={handleQuantityChange}
+              type="number"
+              inputProps={{ min: 1, style: { textAlign: "center", fontWeight: "bold" } }}
+              style={{ width: "100px", margin: "0 10px" }}
+            />
+            <Button
+              variant="outlined"
+              onClick={() => setQuantity(quantity + 1)}
+              style={{
+                minWidth: "50px",
+                fontWeight: "bold",
+                color: "#000",
+              }}
+            >
+              +
+            </Button>
+          </MDBox>
+          <MDBox mb={3}>
+            <TextField
+              label="Max Price Per Share"
+              fullWidth
+              variant="outlined"
+              type="number"
+              value={maxPricePerShare}
+              onChange={(e) => setMaxPricePerShare(e.target.value)}
+              style={{ backgroundColor: "#ffffff" }}
+            />
+          </MDBox>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="inherit">
+        <DialogActions
+          style={{ justifyContent: "space-between", padding: "16px 24px" }}
+        >
+          <Button
+            onClick={handleCloseDialog}
+            variant="outlined"
+            style={{ padding: "8px 24px", color: "#d32f2f", borderColor: "#d32f2f" }}
+          >
             Cancel
           </Button>
           <Button
             onClick={handleConfirmRequest}
             variant="contained"
-            color="primary"
-            disabled={stocks.length === 0}
+            style={{ padding: "8px 24px", backgroundColor: "#2e7d32", color: "white" }}
+            disabled={!selectedStockId || !maxPricePerShare}
           >
             Confirm
           </Button>

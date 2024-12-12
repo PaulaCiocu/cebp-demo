@@ -12,6 +12,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Projects from "layouts/dashboard/components/Projects";
+import MDTypography from "components/MDTypography";
 
 function DashboardStock() {
   const [stocks, setStocks] = useState([]);
@@ -56,10 +57,14 @@ function DashboardStock() {
               <ComplexStatisticsCard
                 color="success"
                 icon="store"
-                title="Stock Providers"
+                title=<MDTypography variant="h5" fontWeight="regular">
+                Stock Providers
+              </MDTypography>
                 count={stockCount}
                 percentage={{
-                  label: "Stocks you can invest to",
+                  label: <MDTypography variant="body2" fontWeight="regular">
+                  Stocks you can invest into
+                </MDTypography>,
                 }}
               />
             </MDBox>
