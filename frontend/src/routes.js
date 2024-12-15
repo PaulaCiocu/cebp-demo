@@ -47,12 +47,14 @@ import SignUp from "layouts/authentication/sign-up";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import PublicRoute from "core/publicroute";
 import PrivateRoute from "core/privateroute";
 import DashboardStock from "layouts/dashboard";
 import MyRequests from "layouts/requests";
 import MyTransactions from "layouts/transactions";
 import UserProfile from "layouts/profile";
+import MyOffers from "layouts/offers";
 
 const routes = [
   {
@@ -89,6 +91,18 @@ const routes = [
     component: (
       <PrivateRoute>
         <MyRequests />
+      </PrivateRoute>
+    ),
+  },
+  {
+    type: "collapse",
+    name: "My Offers",
+    key: "offers",
+    icon: <LocalOfferIcon fontSize="small" />,
+    route: "/offers",
+    component: (
+      <PrivateRoute>
+        <MyOffers />
       </PrivateRoute>
     ),
   },
