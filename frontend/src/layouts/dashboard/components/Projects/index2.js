@@ -60,7 +60,7 @@ function Requests() {
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDTypography variant="h6" gutterBottom>
-          My Requests
+          Pending orders
         </MDTypography>
       </MDBox>
       <MDBox>
