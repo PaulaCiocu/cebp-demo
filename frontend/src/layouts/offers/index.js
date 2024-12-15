@@ -14,11 +14,31 @@ import Paper from "@mui/material/Paper";
 import Projects from "layouts/dashboard/components/Projects";
 import Requests from "layouts/dashboard/components/Projects/index2";
 import Offers from "layouts/dashboard/components/Projects/indexOffer";
+import MDTypography from "components/MDTypography";
 
 function MyOffers() {
   const [stocks, setStocks] = useState([]);
   const [stockCount, setStockCount] = useState("...");
   const [error, setError] = useState(null);
+
+  const [requests, setRequests] = useState([]);
+
+  // Retrieve userId from localStorage
+  const userId = localStorage.getItem("userId");
+
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/users/${userId}/offers`);
+        setRequests(response.data);
+      } catch (err) {
+        console.error("Error fetching offers:", err);
+        setError("Failed to fetch offers");
+      }
+    };
+
+    fetchRequests();
+  }, [userId]);
 
   useEffect(() => {
     const fetchStocks = async () => {
@@ -50,17 +70,36 @@ function MyOffers() {
     fetchStocks();
   }, []);
   return (
-    <DashboardLayout>
-      <MDBox py={3}>
-        <MDBox>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={12}>
-              <Offers />
-            </Grid>
-          </Grid>
-        </MDBox>
-      </MDBox>
-    </DashboardLayout>
+    <>
+      {error && requests.length === 0 && (
+        <DashboardLayout>
+          <MDBox py={3}>
+            <MDBox>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6} lg={12}>
+                  <MDTypography variant="button" color="text" p={2}>
+                    No offers found.
+                  </MDTypography>
+                </Grid>
+              </Grid>
+            </MDBox>
+          </MDBox>
+        </DashboardLayout>
+      )}
+      {requests.length > 0 && (
+        <DashboardLayout>
+          <MDBox py={3}>
+            <MDBox>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6} lg={12}>
+                  <Offers />
+                </Grid>
+              </Grid>
+            </MDBox>
+          </MDBox>
+        </DashboardLayout>
+      )}
+    </>
   );
 }
 
