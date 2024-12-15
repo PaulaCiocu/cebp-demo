@@ -52,14 +52,34 @@ function MyTransactions() {
   return (
     <>
       {error && (
-        <MDTypography variant="button" color="error" p={2}>
-          {error}
-        </MDTypography>
+        <DashboardLayout>
+          <MDBox py={3}>
+            <MDBox>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6} lg={12}>
+                  <MDTypography variant="button" color="error" p={2}>
+                    {error}
+                  </MDTypography>
+                </Grid>
+              </Grid>
+            </MDBox>
+          </MDBox>
+        </DashboardLayout>
       )}
       {!error && transactions.length === 0 && (
-        <MDTypography variant="button" color="text" p={2}>
-          No transactions found.
-        </MDTypography>
+        <DashboardLayout>
+          <MDBox py={3}>
+            <MDBox>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6} lg={12}>
+                  <MDTypography variant="button" color="text" p={2}>
+                    No transactions found.
+                  </MDTypography>
+                </Grid>
+              </Grid>
+            </MDBox>
+          </MDBox>
+        </DashboardLayout>
       )}
       {transactions.length > 0 && (
         <DashboardLayout>
