@@ -13,7 +13,6 @@
   },
   "plugins": ["react"],
   "rules": {
-    
     "react/display-name": "off",
     "default-param-last": "off",
     "react/react-in-jsx-scope": "off",

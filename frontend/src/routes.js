@@ -52,6 +52,7 @@ import PrivateRoute from "core/privateroute";
 import DashboardStock from "layouts/dashboard";
 import MyRequests from "layouts/requests";
 import MyTransactions from "layouts/transactions";
+import UserProfile from "layouts/profile";
 
 const routes = [
   {
@@ -82,8 +83,8 @@ const routes = [
   {
     type: "collapse",
     name: "Pending orders",
-    key: "my-requests",
-    icon: <Icon fontSize="small">person</Icon>,
+    key: "requests",
+    icon: <Icon fontSize="small">pending</Icon>,
     route: "/requests",
     component: (
       <PrivateRoute>
@@ -129,11 +130,10 @@ const routes = [
   {
     type: "collapse",
     name: "Profile",
-    hidden: true,
     key: "profile",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
-    component: <Profile />,
+    component: <UserProfile />,
   },
   {
     type: "collapse",

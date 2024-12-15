@@ -2,6 +2,7 @@ package com.stockexchange.demo.service;
 import com.stockexchange.demo.dto.User.LoginRequestDto;
 import com.stockexchange.demo.dto.User.LoginResponseDto;
 import com.stockexchange.demo.dto.User.UserCreateDto;
+import com.stockexchange.demo.dto.User.UserUpdateDto;
 import com.stockexchange.demo.entity.Offer;
 import com.stockexchange.demo.entity.Request;
 import com.stockexchange.demo.entity.Transaction;
@@ -37,6 +38,7 @@ public class UserService {
         }
 
         User newUser = new User();
+        newUser.setBalance(15000.00);
         newUser.setEmail(userCreateDto.getEmail());
         newUser.setName(userCreateDto.getName());
         newUser.setPassword(userCreateDto.getPassword());
@@ -52,12 +54,13 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public User updateUser(Long id, UserCreateDto userDetails) {
+    public User updateUser(Long id, UserUpdateDto userDetails) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Offer not found with ID: " + id));
 
         if (userDetails.getName() != null) {
             existingUser.setName(userDetails.getName());
+            existingUser.setBalance(userDetails.getBalance());
         }
 
         return userRepository.save(existingUser);

@@ -9,9 +9,10 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -27,14 +28,16 @@ function Projects() {
   const [currentPage, setCurrentPage] = useState(1);
   const stocksPerPage = 8;
 
-  // Retrieve userId from localStorage
   const userId = localStorage.getItem("userId");
+
+  // Snackbar states
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
     const fetchStocks = async () => {
       try {
         const response = await axios.get("http://localhost:8000/stocks");
-
         const stocksWithOffers = await Promise.all(
           response.data.map(async (stock) => {
             try {
@@ -51,6 +54,8 @@ function Projects() {
         setStocks(stocksWithOffers);
       } catch (err) {
         console.error("Error fetching stocks:", err);
+        setSnackbarMessage("Failed to fetch stocks");
+        setSnackbarOpen(true);
       }
     };
 
@@ -76,11 +81,13 @@ function Projects() {
         stockId: selectedStockId,
         userId,
       });
-      alert("Request created successfully!");
+      setSnackbarMessage("Request created successfully!");
+      setSnackbarOpen(true);
       handleCloseDialog();
     } catch (err) {
       console.error("Error creating request:", err);
-      alert("Failed to create request. Check console for details.");
+      setSnackbarMessage("Failed to create request. Check console for details.");
+      setSnackbarOpen(true);
     }
   };
 
@@ -97,52 +104,83 @@ function Projects() {
     setQuantity(value);
   };
 
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") return;
+    setSnackbarOpen(false);
+  };
+
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3} mb={-5}>
         <MDTypography variant="h3" gutterBottom>
-        Stocks
+          Stocks
         </MDTypography>
       </MDBox>
       <MDBox p={2}>
         <Grid container spacing={3}>
-          {currentStocks.map((stock) => (
-            <Grid item xs={12} sm={6} md={3} key={stock.id}>
-              <Card>
-                <MDBox p={2}
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                >
-                  <MDBox mb={1}>
-                    <MDTypography variant="h5" color="black" fontWeight="bold">
-                      {stock.companyName}
-                    </MDTypography>
-                  </MDBox>
-                  
-                  <MDBox mb={1}>
-                    <MDTypography variant="button" color="black" fontWeight="regular">
-                      Available Stocks: {stock.offers.reduce((sum, offer) => sum + offer.quantity, 0)}
-                    </MDTypography>
-                  </MDBox>
-                  <MDBox mb={1}>
-                    <MDTypography variant="button" color="black" fontWeight="regular">
-                      Stock Price: ${stock.offers[0]?.pricePerShare || "N/A"}
-                    </MDTypography>
-                  </MDBox>
-                  <MDButton
-                    variant="gradient"
-                    color="info"
-                    size="small"
-                    onClick={() => handleOpenDialog(stock.id)}
+          {currentStocks.map((stock) => {
+            const totalAvailable =
+              stock.offers && stock.offers.length > 0
+                ? stock.offers.reduce((sum, offer) => sum + offer.quantity, 0)
+                : 0;
+            const pricePerShare =
+              totalAvailable > 0 ? stock.offers[0]?.pricePerShare || "N/A" : "N/A";
+
+            const isGreyedOut = totalAvailable === 0;
+
+            return (
+              <Grid item xs={12} sm={6} md={3} key={stock.id}>
+                <Card style={isGreyedOut ? { opacity: 0.5 } : {}}>
+                  <MDBox
+                    p={2}
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
                   >
-                    Create Request
-                  </MDButton>
-                </MDBox>
-              </Card>
-            </Grid>
-          ))}
+                    <MDBox mb={1}>
+                      <MDTypography variant="h5" color="black" fontWeight="bold">
+                        {stock.companyName}
+                      </MDTypography>
+                    </MDBox>
+
+                    {isGreyedOut ? (
+                      <MDBox mb={1}>
+                        <MDTypography
+                          variant="button"
+                          fontWeight="regular"
+                          sx={{ color: "text.disabled" }}
+                        >
+                          No offers available
+                        </MDTypography>
+                      </MDBox>
+                    ) : (
+                      <>
+                        <MDBox mb={1}>
+                          <MDTypography variant="button" color="black" fontWeight="regular">
+                            Available Stocks: {totalAvailable}
+                          </MDTypography>
+                        </MDBox>
+                        <MDBox mb={1}>
+                          <MDTypography variant="button" color="black" fontWeight="regular">
+                            Stock Price: ${pricePerShare}
+                          </MDTypography>
+                        </MDBox>
+                        <MDButton
+                          variant="gradient"
+                          color="info"
+                          size="small"
+                          onClick={() => handleOpenDialog(stock.id)}
+                        >
+                          Create Request
+                        </MDButton>
+                      </>
+                    )}
+                  </MDBox>
+                </Card>
+              </Grid>
+            );
+          })}
         </Grid>
         <MDBox mt={3} display="flex" justifyContent="center">
           <Pagination
@@ -155,9 +193,7 @@ function Projects() {
       </MDBox>
 
       <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
-        <DialogTitle
-          style={{ textAlign: "center", padding: "16px" }}
-        >
+        <DialogTitle style={{ textAlign: "center", padding: "16px" }}>
           <MDTypography variant="h5" fontWeight="bold">
             Create a Stock Request
           </MDTypography>
@@ -216,9 +252,7 @@ function Projects() {
             />
           </MDBox>
         </DialogContent>
-        <DialogActions
-          style={{ justifyContent: "space-between", padding: "16px 24px" }}
-        >
+        <DialogActions style={{ justifyContent: "space-between", padding: "16px 24px" }}>
           <Button
             onClick={handleCloseDialog}
             variant="outlined"
@@ -236,6 +270,22 @@ function Projects() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Snackbar for toast messages */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="info"
+          sx={{ width: "100%", fontSize: "1.1rem", fontWeight: "bold" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Card>
   );
 }

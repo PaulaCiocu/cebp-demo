@@ -3,6 +3,7 @@ package com.stockexchange.demo.controller;
 import com.stockexchange.demo.dto.User.LoginRequestDto;
 import com.stockexchange.demo.dto.User.LoginResponseDto;
 import com.stockexchange.demo.dto.User.UserCreateDto;
+import com.stockexchange.demo.dto.User.UserUpdateDto;
 import com.stockexchange.demo.entity.Offer;
 import com.stockexchange.demo.entity.Request;
 import com.stockexchange.demo.entity.Transaction;
@@ -60,7 +61,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserCreateDto userDetails) {
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserUpdateDto userDetails) {
         try {
             User updateUser = userService.updateUser(id, userDetails);
             return ResponseEntity.ok(updateUser);

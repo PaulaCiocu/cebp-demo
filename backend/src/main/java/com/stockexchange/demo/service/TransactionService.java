@@ -1,12 +1,10 @@
 package com.stockexchange.demo.service;
 
-import com.stockexchange.demo.entity.Offer;
-import com.stockexchange.demo.entity.Request;
-import com.stockexchange.demo.entity.Stock;
-import com.stockexchange.demo.entity.Transaction;
+import com.stockexchange.demo.entity.*;
 import com.stockexchange.demo.repository.OfferRepository;
 import com.stockexchange.demo.repository.StockRepository;
 import com.stockexchange.demo.repository.TransactionRepository;
+import com.stockexchange.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,23 +21,35 @@ public class TransactionService {
     private RequestService requestService;
     private final TransactionRepository transactionRepository;
 
+    private final UserRepository userRepository;
+
     @Autowired
-    public TransactionService(TransactionRepository transactionRepository, OfferService offerService, RequestService requestService) {
+    public TransactionService(TransactionRepository transactionRepository, UserRepository userRepository, OfferService offerService, RequestService requestService) {
         this.transactionRepository = transactionRepository;
         this.offerService = offerService;
         this.requestService = requestService;
+        this.userRepository = userRepository;
     }
 
     public ResponseEntity<Transaction> createTransaction(Long offerId, Long requestId) {
+
+
 
         Offer offer = offerService.getOfferById(offerId)
                 .orElseThrow(() -> new IllegalArgumentException("Offer not found with ID: " + offerId));
         Request request = requestService.getRequestById(requestId)
                .orElseThrow(() -> new IllegalArgumentException("Request not found with ID: " + requestId));
 
-        // Check if the stock IDs match between the offer and the request
+        User seller = userRepository.findOneById(offer.getUser().getId());
+        User buyer = userRepository.findOneById(request.getUser().getId());
+
+        Double transactionPrice = Math.min(offer.getPricePerShare(), request.getMaxPricePerShare()) * request.getQuantity();
+
+        if (buyer.getBalance() < transactionPrice) {
+            return ResponseEntity.status(403).body(null);
+        }
+
         if (!offer.getStock().getId().equals(request.getStock().getId())) {
-            // If stock IDs don't match, return a bad request response
             return ResponseEntity.badRequest().body(null);
         }
 
@@ -62,6 +72,12 @@ public class TransactionService {
         if (request.getQuantity() == 0) {
             request.setIsFulfilled(true);
         }
+
+        seller.setBalance(seller.getBalance() + transactionPrice);
+        buyer.setBalance(buyer.getBalance() - transactionPrice);
+
+        userRepository.save(seller);
+        userRepository.save(buyer);
 
         Stock stock = stockRepository.findOneById(offer.getStock().getId());
         stock.setRemainingShares(stock.getRemainingShares() - quantity);

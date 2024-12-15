@@ -382,7 +382,6 @@ ajv                        6.9.1   →   6.10.0
 
 ### Major style changes
 
-
 ### Major components changes
 
 - **src/index.js**
@@ -421,7 +420,6 @@ ajv                        6.9.1   →   6.10.0
 - `history4.7.2`
 - `prop-types@15.6.2`
 
-
 ### Updated dependencies
 
 - `@material-ui/core` _3.1.0_ → **3.9.2**
@@ -434,7 +432,6 @@ ajv                        6.9.1   →   6.10.0
 - `react-dom` _16.5.2_ → **16.8.1**
 - `react-scripts` _1.1.5_ → **2.1.5**
 - `react-swipeable-views` _0.12.17_ → **0.13.1**
-
 
 ## [1.5.0] 2018-09-21
 
@@ -466,7 +463,6 @@ ajv                        6.9.1   →   6.10.0
 - `react-scripts` _1.1.4_ → **1.1.5**
 - `react-swipeable-views` _0.12.15_ → **0.12.17**
 - `eslint-plugin-react` _^7.10.0_ → **7.11.1**
-
 
 ## [1.4.1] 2018-08-10
 
