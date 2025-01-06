@@ -4,7 +4,7 @@
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim
+* Copyright 2023
 * Coded by www.creative-tim.com
  =========================================================
 */
@@ -154,9 +154,7 @@ function Requests({ stocksWithOffers }) {
 
       // Update local state with new request data
       setRequests((prevRequests) =>
-        prevRequests.map((req) =>
-          req.id === editRequest.id ? response.data : req
-        )
+        prevRequests.map((req) => (req.id === editRequest.id ? response.data : req))
       );
 
       setSnackbarMessage("Request updated successfully!");
@@ -210,7 +208,6 @@ function Requests({ stocksWithOffers }) {
 
   /**
    * Prepare columns/rows for DataTable
-   * (Pass the new handleEditRequestClick, handleDeleteRequestClick too if needed)
    */
   const { columns, rows } = data(
     pendingRequests,
@@ -264,60 +261,64 @@ function Requests({ stocksWithOffers }) {
 
       {/* Dialog for editing a request */}
       <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
-  <DialogTitle>
-    Edit Request for {editRequest?.stock?.companyName || "Unknown Stock"}
-  </DialogTitle>
-  <DialogContent>
-    <MDTypography variant="body1">
-      Update the fields for your request:
-    </MDTypography>
+        <DialogTitle>
+          Edit Request for {editRequest?.stock?.companyName || "Unknown Stock"}
+        </DialogTitle>
+        <DialogContent>
+          <MDTypography variant="body1">
+            Update the fields for your request:
+          </MDTypography>
 
-    <div style={{ marginTop: "1rem" }}>
-      <label>Quantity:</label>
-      <input
-        type="number"
-        min="1"
-        value={editRequest ? editRequest.quantity : ""}
-        onChange={(e) => {
-          const newValue = Number(e.target.value);
-          if (newValue < 1) {
-            setEditRequest({ ...editRequest, quantity: 1 });
-            return;
-          }
-          setEditRequest({ ...editRequest, quantity: newValue });
-        }}
-      />
-    </div>
+          <div style={{ marginTop: "1rem" }}>
+            <label>Quantity:</label>
+            <input
+              type="number"
+              min="1"
+              value={editRequest ? editRequest.quantity : ""}
+              onChange={(e) => {
+                const newValue = Number(e.target.value);
+                // clamp quantity to at least 1
+                if (newValue < 1) {
+                  setEditRequest({ ...editRequest, quantity: 1 });
+                  return;
+                }
+                setEditRequest({ ...editRequest, quantity: newValue });
+              }}
+            />
+          </div>
 
-    <div style={{ marginTop: "1rem" }}>
-      <label>Max Price/Share:</label>
-      <input
-        type="number"
-        value={editRequest ? editRequest.maxPricePerShare : ""}
-        onChange={(e) =>
-          setEditRequest({ 
-            ...editRequest, 
-            maxPricePerShare: Number(e.target.value) 
-          })
-        }
-      />
-    </div>
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={() => setOpenEditDialog(false)} color="inherit">
-      Cancel
-    </Button>
-    <Button
-      onClick={handleConfirmEdit}
-      variant="contained"
-      color="primary"
-      disabled={!editRequest}
-    >
-      Update
-    </Button>
-  </DialogActions>
-</Dialog>
-
+          <div style={{ marginTop: "1rem" }}>
+            <label>Max Price/Share:</label>
+            <input
+              type="number"
+              min="0"
+              value={editRequest ? editRequest.maxPricePerShare : ""}
+              onChange={(e) => {
+                const newValue = Number(e.target.value);
+                // clamp price to at least 0
+                if (newValue < 0) {
+                  setEditRequest({ ...editRequest, maxPricePerShare: 0 });
+                  return;
+                }
+                setEditRequest({ ...editRequest, maxPricePerShare: newValue });
+              }}
+            />
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenEditDialog(false)} color="inherit">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmEdit}
+            variant="contained"
+            color="primary"
+            disabled={!editRequest}
+          >
+            Update
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Snackbar for toast messages */}
       <Snackbar
