@@ -7,7 +7,6 @@
 * Copyright 2023 Creative Tim
 * Coded by www.creative-tim.com
  =========================================================
-
 */
 
 import { useState, useEffect } from "react";
@@ -48,6 +47,10 @@ function Requests({ stocksWithOffers }) {
   const userId = localStorage.getItem("userId");
   const [balance, setBalance] = useState(null);
 
+  // (A) For editing a request
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [editRequest, setEditRequest] = useState(null);
+
   useEffect(() => {
     const fetchRequests = async () => {
       try {
@@ -74,6 +77,9 @@ function Requests({ stocksWithOffers }) {
     fetchUserBalance();
   }, [userId]);
 
+  /**
+   * Transaction Flow
+   */
   const handleFinishTransactionClick = (request) => {
     setSelectedRequest(request);
     setOpenDialog(true);
@@ -128,20 +134,91 @@ function Requests({ stocksWithOffers }) {
     }
   };
 
+  /**
+   * Edit Request Flow
+   */
+  const handleEditRequestClick = (request) => {
+    setEditRequest(request);
+    setOpenEditDialog(true);
+  };
+
+  const handleConfirmEdit = async () => {
+    if (!editRequest) return;
+
+    try {
+      // Example endpoint - adjust URL/method/body to match your API
+      const response = await axios.patch(`http://localhost:8000/requests/${editRequest.id}`, {
+        quantity: editRequest.quantity,
+        maxPricePerShare: editRequest.maxPricePerShare,
+      });
+
+      // Update local state with new request data
+      setRequests((prevRequests) =>
+        prevRequests.map((req) =>
+          req.id === editRequest.id ? response.data : req
+        )
+      );
+
+      setSnackbarMessage("Request updated successfully!");
+      setSnackbarOpen(true);
+    } catch (err) {
+      console.error("Error updating request:", err);
+      setSnackbarMessage("Failed to update request.");
+      setSnackbarOpen(true);
+    } finally {
+      // Close dialog
+      setOpenEditDialog(false);
+      setEditRequest(null);
+    }
+  };
+
+  /**
+   * Delete Request Flow
+   */
+  const handleDeleteRequestClick = async (request) => {
+    // Optionally confirm with the user
+    if (!window.confirm("Are you sure you want to delete this request?")) return;
+
+    try {
+      // Adjust URL to match your backend
+      await axios.delete(`http://localhost:8000/requests/${request.id}`);
+      setSnackbarMessage("Request deleted successfully.");
+      setSnackbarOpen(true);
+
+      // Remove request from state
+      setRequests((prev) => prev.filter((r) => r.id !== request.id));
+    } catch (err) {
+      console.error("Error deleting request:", err);
+      setSnackbarMessage("Failed to delete request.");
+      setSnackbarOpen(true);
+    }
+  };
+
+  /**
+   * Snackbar close
+   */
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") return;
     setSnackbarOpen(false);
     window.location.reload();
   };
 
-  // Filter out fulfilled requests so that only pending orders are shown
+  /**
+   * Filter out fulfilled requests so that only pending orders are shown
+   */
   const pendingRequests = requests.filter((req) => !req.isFulfilled);
 
+  /**
+   * Prepare columns/rows for DataTable
+   * (Pass the new handleEditRequestClick, handleDeleteRequestClick too if needed)
+   */
   const { columns, rows } = data(
     pendingRequests,
     handleFinishTransactionClick,
     stocksWithOffers,
-    balance
+    balance,
+    handleEditRequestClick,
+    handleDeleteRequestClick
   );
 
   return (
@@ -151,6 +228,7 @@ function Requests({ stocksWithOffers }) {
           Pending orders
         </MDTypography>
       </MDBox>
+
       <MDBox>
         {error && (
           <MDTypography variant="button" color="error" p={2}>
@@ -166,7 +244,7 @@ function Requests({ stocksWithOffers }) {
         />
       </MDBox>
 
-      {/* Confirmation Dialog */}
+      {/* Confirmation Dialog for finishing transaction */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Confirm Transaction</DialogTitle>
         <DialogContent>
@@ -183,6 +261,63 @@ function Requests({ stocksWithOffers }) {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Dialog for editing a request */}
+      <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
+  <DialogTitle>
+    Edit Request for {editRequest?.stock?.companyName || "Unknown Stock"}
+  </DialogTitle>
+  <DialogContent>
+    <MDTypography variant="body1">
+      Update the fields for your request:
+    </MDTypography>
+
+    <div style={{ marginTop: "1rem" }}>
+      <label>Quantity:</label>
+      <input
+        type="number"
+        min="1"
+        value={editRequest ? editRequest.quantity : ""}
+        onChange={(e) => {
+          const newValue = Number(e.target.value);
+          if (newValue < 1) {
+            setEditRequest({ ...editRequest, quantity: 1 });
+            return;
+          }
+          setEditRequest({ ...editRequest, quantity: newValue });
+        }}
+      />
+    </div>
+
+    <div style={{ marginTop: "1rem" }}>
+      <label>Max Price/Share:</label>
+      <input
+        type="number"
+        value={editRequest ? editRequest.maxPricePerShare : ""}
+        onChange={(e) =>
+          setEditRequest({ 
+            ...editRequest, 
+            maxPricePerShare: Number(e.target.value) 
+          })
+        }
+      />
+    </div>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setOpenEditDialog(false)} color="inherit">
+      Cancel
+    </Button>
+    <Button
+      onClick={handleConfirmEdit}
+      variant="contained"
+      color="primary"
+      disabled={!editRequest}
+    >
+      Update
+    </Button>
+  </DialogActions>
+</Dialog>
+
 
       {/* Snackbar for toast messages */}
       <Snackbar
