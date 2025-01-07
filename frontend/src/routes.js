@@ -55,6 +55,7 @@ import MyRequests from "layouts/requests";
 import MyTransactions from "layouts/transactions";
 import UserProfile from "layouts/profile";
 import MyOffers from "layouts/offers";
+import MyStocks from "layouts/stocks";
 
 const routes = [
   {
@@ -105,6 +106,14 @@ const routes = [
         <MyOffers />
       </PrivateRoute>
     ),
+  },
+  {
+    type: "collapse",
+    name: "My Stocks",
+    key: "my-stocks",
+    icon: <Icon fontSize="small">inventory</Icon>,
+    route: "/my-stocks",
+    component: <MyStocks />,
   },
   {
     type: "collapse",

@@ -253,7 +253,7 @@ function Requests({ stocksWithOffers }) {
           <Button onClick={handleCloseDialog} color="inherit">
             Cancel
           </Button>
-          <Button onClick={handleConfirmTransaction} variant="contained" color="primary">
+          <Button onClick={handleConfirmTransaction} variant="contained" color="primary" sx={{ color: "#fff" }}>
             Confirm
           </Button>
         </DialogActions>
