@@ -44,10 +44,24 @@ function Projects() {
               const offersResponse = await axios.get(
                 `http://localhost:8000/stocks/${stock.id}/offers`
               );
-              return { ...stock, offers: offersResponse.data };
+              // Filter unfulfilled offers (quantity > 0)
+              const unfulfilledOffers = offersResponse.data.filter(
+                (offer) => offer.quantity > 0
+              );
+              // Get minimum price per share from unfulfilled offers
+              const minPricePerShare =
+                unfulfilledOffers.length > 0
+                  ? Math.min(...unfulfilledOffers.map((offer) => offer.pricePerShare))
+                  : null;
+
+              return {
+                ...stock,
+                offers: unfulfilledOffers,
+                minPricePerShare,
+              };
             } catch (err) {
               console.error(`Error fetching offers for stock ${stock.id}:`, err);
-              return { ...stock, offers: [] };
+              return { ...stock, offers: [], minPricePerShare: null };
             }
           })
         );
@@ -123,8 +137,7 @@ function Projects() {
               stock.offers && stock.offers.length > 0
                 ? stock.offers.reduce((sum, offer) => sum + offer.quantity, 0)
                 : 0;
-            const pricePerShare =
-              totalAvailable > 0 ? stock.offers[0]?.pricePerShare || "N/A" : "N/A";
+            const pricePerShare = stock.minPricePerShare !== null ? `$${stock.minPricePerShare}` : "N/A";
 
             const isGreyedOut = totalAvailable === 0;
 
@@ -163,7 +176,7 @@ function Projects() {
                         </MDBox>
                         <MDBox mb={1}>
                           <MDTypography variant="button" color="black" fontWeight="regular">
-                            Stock Price: ${pricePerShare}
+                            Stock Price: {pricePerShare}
                           </MDTypography>
                         </MDBox>
                         <MDButton
