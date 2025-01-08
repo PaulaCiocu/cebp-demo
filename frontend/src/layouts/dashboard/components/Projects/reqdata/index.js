@@ -14,8 +14,18 @@
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import Tooltip from "@mui/material/Tooltip";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function data(requests, handleFinishTransactionClick, stocksWithOffers, balance) {
+
+export default function data(
+  requests,
+  handleFinishTransactionClick,
+  stocksWithOffers,
+  balance,
+  handleEditRequestClick,
+  handleDeleteRequestClick
+) {
   return {
     columns: [
       { Header: "Company", accessor: "companyName", align: "left" },
@@ -26,45 +36,28 @@ export default function data(requests, handleFinishTransactionClick, stocksWithO
     ],
 
     rows: requests.map((req) => {
+      // If the request was already fulfilled, we handle it differently, etc.
       if (req.isFulfilled) {
-        // Fulfilled requests handling if not filtered out
         return {
-          companyName: (
-            <MDTypography variant="button" fontWeight="medium" lineHeight={1}>
-              {req.stock.companyName}
-            </MDTypography>
-          ),
-          quantity: (
-            <MDTypography variant="caption" color="text" fontWeight="medium">
-              {req.quantity}
-            </MDTypography>
-          ),
-          maxPricePerShare: (
-            <MDTypography variant="button" fontWeight="medium" lineHeight={1}>
-              {req.maxPricePerShare}
-            </MDTypography>
-          ),
-          offerSharePrice: (
-            <MDTypography variant="button" fontWeight="medium" lineHeight={1} color="text.disabled">
-              N/A
-            </MDTypography>
-          ),
-          action: (
-            <MDTypography variant="button" color="success" fontWeight="medium" lineHeight={1}>
-              Fulfilled
-            </MDTypography>
-          ),
+          companyName: req.stock.companyName,
+          quantity: req.quantity,
+          maxPricePerShare: req.maxPricePerShare,
+          offerSharePrice: "N/A",
+          action: "Fulfilled",
         };
       }
 
+      // Find matching stock & offer
       const matchingStock = stocksWithOffers.find((s) => s.id === req.stock.id);
-      let disabled = false;
-      let tooltipMessage = "";
-      let offerPriceDisplay = "N/A";
 
+      // We'll track if Finish should be disabled separately:
+      let finishDisabled = false;
+      let tooltipMessage = "";
+
+      let offerPriceDisplay = "N/A";
       if (!matchingStock || !matchingStock.offers || matchingStock.offers.length === 0) {
         // No offers available
-        disabled = true;
+        finishDisabled = true;
         tooltipMessage = "No matching offers available.";
       } else {
         const matchingOffer = matchingStock.offers[0];
@@ -75,58 +68,77 @@ export default function data(requests, handleFinishTransactionClick, stocksWithO
         const requiredAmount = req.quantity * effectivePrice;
 
         if (balance === null) {
-          disabled = true;
+          finishDisabled = true;
           tooltipMessage = "User balance not available.";
         } else if (req.maxPricePerShare < matchingOffer.pricePerShare) {
-          disabled = true;
+          finishDisabled = true;
           tooltipMessage = "User's max price is lower than the offer price.";
         } else if (requiredAmount > balance) {
-          disabled = true;
+          finishDisabled = true;
           tooltipMessage = "Not enough balance.";
         }
       }
 
-      const actionButton = (
+      // The Finish Transaction button
+      const finishButton = finishDisabled ? (
+        <Tooltip title={tooltipMessage} arrow>
+          {/* Wrapping the button in a <span> to allow disabling with a tooltip */}
+          <span>
+            <MDButton variant="gradient" color="info" size="small" disabled>
+              Finish Transaction
+            </MDButton>
+          </span>
+        </Tooltip>
+      ) : (
         <MDButton
           variant="gradient"
           color="info"
           size="small"
           onClick={() => handleFinishTransactionClick(req)}
-          disabled={disabled}
         >
           Finish Transaction
         </MDButton>
       );
 
+      // Edit button (always enabled)
+      const editButton = (
+        <MDButton
+          variant="gradient"
+          color="warning"
+          size="small"
+          onClick={() => handleEditRequestClick(req)}
+        >
+          Edit
+        </MDButton>
+      );
+
+      // Delete button (always enabled)
+      const deleteButton = (
+        <MDButton
+          variant="gradient"
+          color="error"
+          size="small"
+          onClick={() => handleDeleteRequestClick(req)}
+        >
+          Delete
+        </MDButton>
+      );
+
+      // Put all three buttons side by side
       return {
-        companyName: (
-          <MDTypography variant="button" fontWeight="medium" lineHeight={1}>
-            {req.stock.companyName}
-          </MDTypography>
-        ),
-        quantity: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {req.quantity}
-          </MDTypography>
-        ),
-        maxPricePerShare: (
-          <MDTypography variant="button" fontWeight="medium" lineHeight={1}>
-            {req.maxPricePerShare}
-          </MDTypography>
-        ),
-        offerSharePrice: (
-          <MDTypography variant="button" fontWeight="medium" lineHeight={1}>
-            {offerPriceDisplay}
-          </MDTypography>
-        ),
-        action: disabled ? (
-          <Tooltip title={tooltipMessage} arrow>
-            <span>{actionButton}</span>
-          </Tooltip>
-        ) : (
-          actionButton
+        companyName: req.stock.companyName,
+        quantity: req.quantity,
+        maxPricePerShare: req.maxPricePerShare,
+        offerSharePrice: offerPriceDisplay,
+        action: (
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            {finishButton}
+            {editButton}
+            {deleteButton}
+          </div>
         ),
       };
     }),
   };
 }
+

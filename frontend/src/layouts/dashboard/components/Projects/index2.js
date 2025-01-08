@@ -1,15 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim
-* Coded by www.creative-tim.com
- =========================================================
-
-*/
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
@@ -30,6 +18,8 @@ import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React examples
 import DataTable from "examples/Tables/DataTable";
+import TextField from "@mui/material/TextField";
+
 
 // Data
 import data from "./reqdata"; // Adjust the import path if necessary
@@ -47,6 +37,10 @@ function Requests({ stocksWithOffers }) {
 
   const userId = localStorage.getItem("userId");
   const [balance, setBalance] = useState(null);
+
+  // For editing a request
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [editRequest, setEditRequest] = useState(null);
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -74,6 +68,13 @@ function Requests({ stocksWithOffers }) {
     fetchUserBalance();
   }, [userId]);
 
+  // Sort offers in stocksWithOffers by pricePerShare
+  const sortedStocksWithOffers = stocksWithOffers.map((stock) => ({
+    ...stock,
+    offers: stock.offers.sort((a, b) => a.pricePerShare - b.pricePerShare),
+  }));
+
+  // Transaction Flow
   const handleFinishTransactionClick = (request) => {
     setSelectedRequest(request);
     setOpenDialog(true);
@@ -87,7 +88,7 @@ function Requests({ stocksWithOffers }) {
   const handleConfirmTransaction = async () => {
     if (!selectedRequest) return;
 
-    const matchingStock = stocksWithOffers.find((s) => s.id === selectedRequest.stock.id);
+    const matchingStock = sortedStocksWithOffers.find((s) => s.id === selectedRequest.stock.id);
     if (!matchingStock || !matchingStock.offers || matchingStock.offers.length === 0) {
       setSnackbarMessage("No matching offer found for this request");
       setSnackbarOpen(true);
@@ -95,10 +96,19 @@ function Requests({ stocksWithOffers }) {
       return;
     }
 
-    const matchingOffer = matchingStock.offers[0];
-    const requiredAmount = selectedRequest.quantity * selectedRequest.maxPricePerShare;
+    const matchingOffer = matchingStock.offers.find(
+      (offer) => offer.quantity >= selectedRequest.quantity
+    );
 
-    // Double-check conditions before final transaction
+    if (!matchingOffer) {
+      setSnackbarMessage("No offer with sufficient quantity found for this request");
+      setSnackbarOpen(true);
+      handleCloseDialog();
+      return;
+    }
+
+    const requiredAmount = selectedRequest.quantity * matchingOffer.pricePerShare;
+
     if (
       balance === null ||
       requiredAmount > balance ||
@@ -128,20 +138,78 @@ function Requests({ stocksWithOffers }) {
     }
   };
 
+  // Edit Request Flow
+  const handleEditRequestClick = (request) => {
+    if (!request) {
+      setSnackbarMessage("Invalid request selected for editing.");
+      setSnackbarOpen(true);
+      return;
+    }
+    setEditRequest({ ...request }); // Create a copy to avoid direct mutations
+    setOpenEditDialog(true);
+  };
+  
+
+  const handleConfirmEdit = async () => {
+    if (!editRequest) return;
+
+    try {
+      const response = await axios.patch(`http://localhost:8000/requests/${editRequest.id}`, {
+        quantity: editRequest.quantity,
+        maxPricePerShare: editRequest.maxPricePerShare,
+      });
+
+      setRequests((prevRequests) =>
+        prevRequests.map((req) => (req.id === editRequest.id ? response.data : req))
+      );
+
+      setSnackbarMessage("Request updated successfully!");
+      setSnackbarOpen(true);
+    } catch (err) {
+      console.error("Error updating request:", err);
+      setSnackbarMessage("Failed to update request.");
+      setSnackbarOpen(true);
+    } finally {
+      setOpenEditDialog(false);
+      setEditRequest(null);
+    }
+  };
+
+  // Delete Request Flow
+  const handleDeleteRequestClick = async (request) => {
+    if (!window.confirm("Are you sure you want to delete this request?")) return;
+
+    try {
+      await axios.delete(`http://localhost:8000/requests/${request.id}`);
+      setSnackbarMessage("Request deleted successfully.");
+      setSnackbarOpen(true);
+
+      setRequests((prev) => prev.filter((r) => r.id !== request.id));
+    } catch (err) {
+      console.error("Error deleting request:", err);
+      setSnackbarMessage("Failed to delete request.");
+      setSnackbarOpen(true);
+    }
+  };
+
+  // Snackbar close
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") return;
     setSnackbarOpen(false);
     window.location.reload();
   };
 
-  // Filter out fulfilled requests so that only pending orders are shown
+  // Filter out fulfilled requests
   const pendingRequests = requests.filter((req) => !req.isFulfilled);
 
+  // Prepare columns/rows for DataTable
   const { columns, rows } = data(
     pendingRequests,
     handleFinishTransactionClick,
-    stocksWithOffers,
-    balance
+    sortedStocksWithOffers,
+    balance,
+    handleEditRequestClick,
+    handleDeleteRequestClick
   );
 
   return (
@@ -151,6 +219,7 @@ function Requests({ stocksWithOffers }) {
           Pending orders
         </MDTypography>
       </MDBox>
+
       <MDBox>
         {error && (
           <MDTypography variant="button" color="error" p={2}>
@@ -166,19 +235,93 @@ function Requests({ stocksWithOffers }) {
         />
       </MDBox>
 
-      {/* Confirmation Dialog */}
+      {/* Edit Request Dialog */}
+<Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
+  <DialogTitle>Edit Request</DialogTitle>
+  <DialogContent>
+    <MDTypography variant="body1" gutterBottom>
+      Modify the request details below:
+    </MDTypography>
+    <MDBox display="flex" flexDirection="column" gap={2}>
+      <TextField
+        label="Quantity"
+        type="number"
+        value={editRequest?.quantity || ""}
+        onChange={(e) =>
+          setEditRequest((prev) => ({ ...prev, quantity: Number(e.target.value) }))
+        }
+        fullWidth
+      />
+      <TextField
+        label="Max Price Per Share"
+        type="number"
+        value={editRequest?.maxPricePerShare || ""}
+        onChange={(e) =>
+          setEditRequest((prev) => ({ ...prev, maxPricePerShare: Number(e.target.value) }))
+        }
+        fullWidth
+      />
+    </MDBox>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setOpenEditDialog(false)} color="inherit">
+      Cancel
+    </Button>
+    <Button
+      onClick={handleConfirmEdit}
+      variant="contained"
+      color="primary"
+      sx={{ color: "#fff" }}
+    >
+      Save Changes
+    </Button>
+  </DialogActions>
+</Dialog>
+
+
+      
+
+      {/* Confirmation Dialog for finishing transaction */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Confirm Transaction</DialogTitle>
         <DialogContent>
           <MDTypography variant="body1">
             Are you sure you want to finish this transaction?
           </MDTypography>
+          {!selectedRequest || !sortedStocksWithOffers.find(
+            (s) => s.id === selectedRequest.stock.id &&
+            s.offers.some(
+              (offer) =>
+                offer.quantity >= selectedRequest.quantity &&
+                offer.pricePerShare <= selectedRequest.maxPricePerShare
+            )
+          ) && (
+            <MDTypography variant="body2" color="error" mt={2}>
+              Cannot proceed due to insufficient offer quantity or price conditions.
+            </MDTypography>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="inherit">
             Cancel
           </Button>
-          <Button onClick={handleConfirmTransaction} variant="contained" color="primary">
+          <Button
+            onClick={handleConfirmTransaction}
+            variant="contained"
+            color="primary"
+            sx={{ color: "#fff" }}
+            disabled={
+              !selectedRequest ||
+              !sortedStocksWithOffers.find(
+                (s) => s.id === selectedRequest.stock.id &&
+                s.offers.some(
+                  (offer) =>
+                    offer.quantity >= selectedRequest.quantity &&
+                    offer.pricePerShare <= selectedRequest.maxPricePerShare
+                )
+              )
+            }
+          >
             Confirm
           </Button>
         </DialogActions>
