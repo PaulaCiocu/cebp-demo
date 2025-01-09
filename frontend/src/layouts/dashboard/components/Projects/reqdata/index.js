@@ -1,22 +1,5 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/function-component-definition */
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* (C) 2023 Creative Tim
- =========================================================
-
-*/
-
-import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import Tooltip from "@mui/material/Tooltip";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-
 
 export default function data(
   requests,

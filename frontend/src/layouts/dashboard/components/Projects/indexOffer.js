@@ -1,43 +1,19 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim
-* Coded by www.creative-tim.com
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-// @mui material components
 import Card from "@mui/material/Card";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import Button from "@mui/material/Button";
 
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton";
 
-// Material Dashboard 2 React examples
 import DataTable from "examples/Tables/DataTable";
 
-// Data
-import data from "./offersData"; // Adjust the import path if necessary
+import data from "./offersData"; 
 
 function Offers() {
   const [requests, setRequests] = useState([]);
   const [error, setError] = useState("");
 
-  // Retrieve userId from localStorage
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {

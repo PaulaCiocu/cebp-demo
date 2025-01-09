@@ -27,7 +27,6 @@ function Login() {
         password,
       });
 
-      // Assuming response.data contains { userId: "...", ... }
       localStorage.setItem("isAuthenticated", "true");
       localStorage.setItem("userId", response.data.userId);
 

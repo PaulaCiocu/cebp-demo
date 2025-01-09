@@ -1,43 +1,21 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/function-component-definition */
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useEffect } from "react";
 import { useLocation, NavLink, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
-// @mui material components
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
 import Icon from "@mui/material/Icon";
 
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 
-// Material Dashboard 2 React example components
 import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 
-// Custom styles for the Sidenav
 import SidenavRoot from "examples/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "examples/Sidenav/styles/sidenav";
 
-// Material Dashboard 2 React context
 import {
   useMaterialUIController,
   setMiniSidenav,
@@ -74,7 +52,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     return () => window.removeEventListener("resize", handleMiniSidenav);
   }, [dispatch, location, transparentSidenav, whiteSidenav]);
 
-  // Filter out any routes that should be hidden
+
   const filteredRoutes = routes.filter((route) => !route.hidden);
 
   const renderRoutes = filteredRoutes.map(
@@ -136,9 +114,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   );
 
   const handleSignOut = () => {
-    // Remove the auth from localStorage
     localStorage.removeItem("isAuthenticated");
-    // Redirect to login
     navigate("/login");
   };
 

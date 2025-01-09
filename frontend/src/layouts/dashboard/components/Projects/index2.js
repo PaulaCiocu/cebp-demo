@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 
-// @mui material components
 import Card from "@mui/material/Card";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -12,17 +11,13 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
-// Material Dashboard 2 React examples
 import DataTable from "examples/Tables/DataTable";
 import TextField from "@mui/material/TextField";
 
-
-// Data
-import data from "./reqdata"; // Adjust the import path if necessary
+import data from "./reqdata"; 
 
 function Requests({ stocksWithOffers }) {
   const [requests, setRequests] = useState([]);
@@ -31,14 +26,12 @@ function Requests({ stocksWithOffers }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
 
-  // Snackbar states
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const userId = localStorage.getItem("userId");
   const [balance, setBalance] = useState(null);
 
-  // For editing a request
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editRequest, setEditRequest] = useState(null);
 
@@ -68,13 +61,11 @@ function Requests({ stocksWithOffers }) {
     fetchUserBalance();
   }, [userId]);
 
-  // Sort offers in stocksWithOffers by pricePerShare
   const sortedStocksWithOffers = stocksWithOffers.map((stock) => ({
     ...stock,
     offers: stock.offers.sort((a, b) => a.pricePerShare - b.pricePerShare),
   }));
 
-  // Transaction Flow
   const handleFinishTransactionClick = (request) => {
     setSelectedRequest(request);
     setOpenDialog(true);
@@ -138,14 +129,13 @@ function Requests({ stocksWithOffers }) {
     }
   };
 
-  // Edit Request Flow
   const handleEditRequestClick = (request) => {
     if (!request) {
       setSnackbarMessage("Invalid request selected for editing.");
       setSnackbarOpen(true);
       return;
     }
-    setEditRequest({ ...request }); // Create a copy to avoid direct mutations
+    setEditRequest({ ...request });
     setOpenEditDialog(true);
   };
   
@@ -175,7 +165,6 @@ function Requests({ stocksWithOffers }) {
     }
   };
 
-  // Delete Request Flow
   const handleDeleteRequestClick = async (request) => {
     if (!window.confirm("Are you sure you want to delete this request?")) return;
 
@@ -192,17 +181,14 @@ function Requests({ stocksWithOffers }) {
     }
   };
 
-  // Snackbar close
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") return;
     setSnackbarOpen(false);
     window.location.reload();
   };
 
-  // Filter out fulfilled requests
   const pendingRequests = requests.filter((req) => !req.isFulfilled);
 
-  // Prepare columns/rows for DataTable
   const { columns, rows } = data(
     pendingRequests,
     handleFinishTransactionClick,
@@ -235,7 +221,7 @@ function Requests({ stocksWithOffers }) {
         />
       </MDBox>
 
-      {/* Edit Request Dialog */}
+      {}
 <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
   <DialogTitle>Edit Request</DialogTitle>
   <DialogContent>
@@ -281,7 +267,7 @@ function Requests({ stocksWithOffers }) {
 
       
 
-      {/* Confirmation Dialog for finishing transaction */}
+      {}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Confirm Transaction</DialogTitle>
         <DialogContent>

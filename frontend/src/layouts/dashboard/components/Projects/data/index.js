@@ -1,6 +1,5 @@
 import MDTypography from "../../../../../components/MDTypography";
 import MDButton from "../../../../../components/MDButton";
-import { useTheme } from "@mui/material/styles";
 
 export default function data(stocks, handleOpenDialog) {
   return {
