@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-// @mui material components
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import Pagination from "@mui/material/Pagination";
@@ -14,7 +13,6 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
@@ -30,7 +28,6 @@ function Projects() {
 
   const userId = localStorage.getItem("userId");
 
-  // Snackbar states
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
@@ -44,11 +41,9 @@ function Projects() {
               const offersResponse = await axios.get(
                 `http://localhost:8000/stocks/${stock.id}/offers`
               );
-              // Filter unfulfilled offers (quantity > 0)
               const unfulfilledOffers = offersResponse.data.filter(
                 (offer) => offer.quantity > 0
               );
-              // Get minimum price per share from unfulfilled offers
               const minPricePerShare =
                 unfulfilledOffers.length > 0
                   ? Math.min(...unfulfilledOffers.map((offer) => offer.pricePerShare))
@@ -284,7 +279,7 @@ function Projects() {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for toast messages */}
+      {}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}

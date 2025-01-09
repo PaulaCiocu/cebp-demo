@@ -1,16 +1,3 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/function-component-definition */
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* (C) 2023 Creative Tim
-=========================================================
-
-*/
-
 import MDTypography from "components/MDTypography";
 
 export default function data(transactions) {

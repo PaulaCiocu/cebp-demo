@@ -20,26 +20,20 @@ function MyStocks() {
   const [fulfilledTx, setFulfilledTx] = useState([]);
   const [error, setError] = useState(null);
 
-  // For "Create Offer" dialog
   const [createOfferDialogOpen, setCreateOfferDialogOpen] = useState(false);
   const [selectedTx, setSelectedTx] = useState(null);
   const [selectedStock, setSelectedStock] = useState(null);
 
-  // Quantity & price for the new offer
   const [offerQuantity, setOfferQuantity] = useState(1);
   const [offerPrice, setOfferPrice] = useState(1);
 
-  // Snackbar for success/error messages
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  // 1) Create a reusable function to fetch the user’s transactions
   const fetchTransactions = useCallback(async () => {
     try {
       const { data } = await axios.get(`http://localhost:8000/users/${userId}/transactions`);
 
-      // Filter only those transactions that are "fulfilled" on either the offer OR request side
-      // AND have quantity >= 1
       const onlyFulfilled = data.filter((tx) => {
         const isOfferFulfilled = tx.offer?.isFulfilled === true;
         const isRequestFulfilled = tx.request?.isFulfilled === true;
@@ -55,12 +49,10 @@ function MyStocks() {
     }
   }, [userId]);
 
-  // 2) On mount, fetch data
   useEffect(() => {
     fetchTransactions();
   }, [fetchTransactions]);
 
-  // 3) Table columns
   const columns = [
     { Header: "Company", accessor: "companyName", align: "left" },
     { Header: "Quantity", accessor: "quantity", align: "left" },
@@ -68,12 +60,7 @@ function MyStocks() {
     { Header: "Actions", accessor: "actions", align: "center" },
   ];
 
-  // 4) Build table rows from the filtered transactions
   const rows = fulfilledTx.map((tx) => {
-    // If the user is the one who made the offer, tx.offer?.stock is relevant
-    // If the user is the one who made the request, maybe tx.request?.stock is relevant.
-    // For simplicity, assume the user is always on the 'offer' side or they care about whichever stock is not null
-    // If you only want one or the other, adjust accordingly.
     const stock = tx.offer?.stock || tx.request?.stock;
     return {
       companyName: stock?.companyName || "N/A",
@@ -83,7 +70,7 @@ function MyStocks() {
         <Button
           variant="contained"
           color="primary"
-          sx={{ color: "#fff" }} // ensure white text
+          sx={{ color: "#fff" }} 
           onClick={() => handleCreateOfferClick(tx)}
         >
           Create Offer
@@ -92,7 +79,6 @@ function MyStocks() {
     };
   });
 
-  // Handling "Create Offer"
   const handleCreateOfferClick = (tx) => {
     setSelectedTx(tx);
     const stockRef = tx.offer?.stock || tx.request?.stock;
@@ -104,7 +90,6 @@ function MyStocks() {
     setCreateOfferDialogOpen(true);
   };
 
-  // Close the "Create Offer" dialog
   const handleCloseCreateOfferDialog = () => {
     setCreateOfferDialogOpen(false);
     setSelectedTx(null);
@@ -113,7 +98,6 @@ function MyStocks() {
     setOfferPrice(1);
   };
 
-  // Confirm creating the new offer
   const handleConfirmCreateOffer = async () => {
     if (!selectedStock) return;
 
@@ -123,13 +107,12 @@ function MyStocks() {
         pricePerShare: offerPrice,
         stockId: selectedTx.offer?.stock?.id,
         userId: userId,
-        transactionId: selectedTx.id, // <--- pass the transaction ID
+        transactionId: selectedTx.id, 
         });
 
       setSnackbarMessage("Offer created successfully!");
       setSnackbarOpen(true);
 
-      // If you want to see the updated quantity from the backend, re-fetch:
       await fetchTransactions();
     } catch (err) {
       console.error("Error creating offer:", err);
@@ -140,7 +123,6 @@ function MyStocks() {
     }
   };
 
-  // Close snackbar
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") return;
     setSnackbarOpen(false);

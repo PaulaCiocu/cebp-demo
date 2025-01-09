@@ -20,8 +20,6 @@ function DashboardStock() {
       try {
         const response = await axios.get("http://localhost:8000/stocks");
         setStockCount(response.data.length);
-
-        // Fetch offers for each stock
         const stocksWithOffers = await Promise.all(
           response.data.map(async (stock) => {
             try {

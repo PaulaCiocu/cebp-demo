@@ -1,20 +1,6 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim
-* Coded by www.creative-tim.com
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-// Material UI components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -24,13 +10,11 @@ import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
 import { styled } from "@mui/material/styles";
 
-// Material Dashboard 2 React components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 
-// Material UI icons
 import PersonIcon from "@mui/icons-material/Person";
 
 const UserAvatar = styled(Avatar)(({ theme }) => ({
